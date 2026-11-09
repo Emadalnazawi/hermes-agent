@@ -141,7 +141,7 @@ test('Arabic chat and editor use native regular typography without flattening em
   }
 })
 
-test('Arabic skins own distinct tokenized bubbles at logical start and end', async ({
+test('Arabic skins own distinct tokenized bubbles with the user on the right', async ({
   browserName: _browserName
 }, testInfo) => {
   const { app, page, server } = await openFixture()
@@ -195,22 +195,10 @@ test('Arabic skins own distinct tokenized bubbles at logical start and end', asy
         expect.soft(u.width).toBeLessThanOrEqual(cap + 0.5)
         expect.soft(u.width).toBeCloseTo(cap, 0)
         expect.soft(a.width).toBeLessThanOrEqual(cap + 0.5)
-        expect
-          .soft(
-            Math.abs(
-              (direction === 'rtl' ? u.x : u.x + u.width) -
-                (direction === 'rtl' ? bounds!.x : bounds!.x + bounds!.width)
-            )
-          )
-          .toBeLessThan(1)
-        expect
-          .soft(
-            Math.abs(
-              (direction === 'rtl' ? a.x + a.width : a.x) -
-                (direction === 'rtl' ? bounds!.x + bounds!.width : bounds!.x)
-            )
-          )
-          .toBeLessThan(1)
+        // Emad's preference: physical sides in both directions — user on the
+        // right, assistant on the left (RTL: user = inline-start).
+        expect.soft(Math.abs(u.x + u.width - (bounds!.x + bounds!.width))).toBeLessThan(1)
+        expect.soft(Math.abs(a.x - bounds!.x)).toBeLessThan(1)
       }
     }
 

@@ -51,11 +51,15 @@
 
   /* Size the action/reaction anchor with the bubble, not the full transcript.
      Its existing restore/stop affordance keeps its inline paint and clearance. */
+  /* SIDES ARE PHYSICAL, by Emad's explicit preference (overrides Grok's
+     logical mirroring): the user is always on the right and the assistant on
+     the left, in Arabic as in English. In RTL that is user = inline-start,
+     assistant = inline-end. See DESIGN.md "Chat bubbles". */
   [data-slot='aui_user-bubble-actions'] {
     inline-size: fit-content;
     max-inline-size: var(--dt-chat-bubble-max-width);
-    margin-inline-start: auto;
-    margin-inline-end: 0;
+    margin-left: auto;
+    margin-right: 0;
   }
 
   .composer-human-message {
@@ -65,14 +69,15 @@
 
   [data-slot='aui_edit-composer-root'] {
     max-inline-size: var(--dt-chat-bubble-max-width);
-    margin-inline-start: auto;
+    margin-left: auto;
+    margin-right: 0;
   }
 
   [data-slot='aui_assistant-message-content'] {
     inline-size: fit-content;
     max-inline-size: var(--dt-chat-bubble-max-width);
-    margin-inline-start: 0;
-    margin-inline-end: auto;
+    margin-left: 0;
+    margin-right: auto;
     padding-inline: var(--dt-chat-bubble-padding-inline);
     background-color: var(--dt-chat-assistant-background);
     color: var(--dt-chat-assistant-foreground);

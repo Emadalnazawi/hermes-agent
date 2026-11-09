@@ -393,8 +393,12 @@ and `hermes-arabi-light` (including ThemeProvider's normalized name + mode).
 Dedicated `--dt-chat-{user,assistant}-{background,foreground}` tokens keep
 message colors separate from `--ui-chat-bubble-background`, which dialogs use.
 Shared geometry: `--dt-chat-bubble-{radius,padding-block,padding-inline,max-width}`.
-User/action anchors sit at inline-end, assistant content at inline-start. Keep
-existing user restore/stop clearance and the transcript's turn spacing.
+Sides are PHYSICAL, by Emad's explicit preference (it deliberately differs
+from Grok, which mirrors them logically): user/action anchors always sit on
+the right and assistant content on the left, in Arabic and English alike. In
+RTL that means user = inline-start, assistant = inline-end. Text inside each
+bubble still aligns to `start`. Keep existing user restore/stop clearance and
+the transcript's turn spacing.
 
 The skin engine already supports `customCSS`; override these variables in its
 `:root` block. Defaults have zero specificity, so skin overrides win. No skin
@@ -404,7 +408,8 @@ Source: Grok Bot 0.79.3 renderer `index-FlssbLEI.css` (minified line 1):
 `.sand-ocoep0` → 18px prose radius; `.sand-figyqd` / `.sand-1q1yrnu` → 7px
 block padding; `.sand-vhurb8` / `.sand-11ct0s3` → 12px inline padding;
 `.sand-12qmj0a` / `.sand-18rdzox` → user / agent fill;
-`.sand-vc5jky` → `margin-inline-start:auto`; `.sand-pvyfi4` → `align-self:flex-end`.
+`.sand-vc5jky` → `margin-inline-start:auto`; `.sand-pvyfi4` → `align-self:flex-end`
+(Grok's logical sides; not used — see the physical-sides rule above).
 `index.eager-app-Bpx4jnxc.js` assigns those classes in `JX.message` / `JX.user`.
 Group starts (`.sand-19snzy6`) add `--cursor-spacing-3` = 12px; continuation
 exceptions are separate. This skin retains Hermes's existing turn grouping.
