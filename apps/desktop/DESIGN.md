@@ -386,6 +386,31 @@ The Arabic base is 14px, body leading 20px and transcript prose leading 22px;
 the user's Chat Text Size multiplier still applies. Preserve semantic bold,
 headings and isolated-LTR code; do not flatten descendant weights.
 
+### Arabic skin bubbles
+
+`src/themes/hermes-arabi.css` owns the opt-in treatment for `hermes-arabi`
+and `hermes-arabi-light` (including ThemeProvider's normalized name + mode).
+Dedicated `--dt-chat-{user,assistant}-{background,foreground}` tokens keep
+message colors separate from `--ui-chat-bubble-background`, which dialogs use.
+Shared geometry: `--dt-chat-bubble-{radius,padding-block,padding-inline,max-width}`.
+User/action anchors sit at inline-end, assistant content at inline-start. Keep
+existing user restore/stop clearance and the transcript's turn spacing.
+
+The skin engine already supports `customCSS`; override these variables in its
+`:root` block. Defaults have zero specificity, so skin overrides win. No skin
+schema/backend change or modification of installed user skin files is required.
+
+Source: Grok Bot 0.79.3 renderer `index-FlssbLEI.css` (minified line 1):
+`.sand-ocoep0` → 18px prose radius; `.sand-figyqd` / `.sand-1q1yrnu` → 7px
+block padding; `.sand-vhurb8` / `.sand-11ct0s3` → 12px inline padding;
+`.sand-12qmj0a` / `.sand-18rdzox` → user / agent fill;
+`.sand-vc5jky` → `margin-inline-start:auto`; `.sand-pvyfi4` → `align-self:flex-end`.
+`index.eager-app-Bpx4jnxc.js` assigns those classes in `JX.message` / `JX.user`.
+Group starts (`.sand-19snzy6`) add `--cursor-spacing-3` = 12px; continuation
+exceptions are separate. This skin retains Hermes's existing turn grouping.
+The requested 640px cap is intentional: this Grok version's `.sand-1q8iv8g`
+actually uses `min(80%,560px,100% - 82px)`, not 640px.
+
 ## Chat, tools & boot surfaces
 
 - The thread timeline rail sits at inline-end in both LTR and RTL. Its visible

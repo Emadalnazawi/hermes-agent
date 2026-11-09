@@ -13,9 +13,12 @@ const fixture = `
 <main style="max-width:760px;margin:40px auto;padding:24px">
   <div data-slot="aui_thread-content" class="flex flex-col gap-4">
     <div data-slot="aui_user-message-root" class="flex flex-col items-stretch">
-      <div class="composer-human-message standalone-glass relative flex w-full min-w-0 max-w-full flex-col gap-1.5 rounded-xl border bg-(--dt-user-bubble) px-3 py-2 text-left">
+      <div data-slot="aui_user-bubble-actions" class="relative w-full max-w-full">
+      <div class="human-message-with-todos-wrapper flex w-full flex-col gap-0"><div class="relative w-full">
+      <div class="composer-human-message standalone-glass relative flex w-full min-w-0 max-w-full flex-col gap-1.5 rounded-xl border bg-(--dt-user-bubble) px-3 py-2 pr-9 text-left">
         <div data-slot="aui_user-inline-text" id="user-text">هذه رسالة عربية تجريبية لقياس وضوح الخط ووزنه العادي.</div>
       </div>
+      </div></div></div>
     </div>
     <div data-slot="aui_assistant-message-root" class="flex w-full min-w-0 flex-col self-start">
       <div data-slot="aui_assistant-message-content" class="min-w-0 max-w-full text-foreground">
@@ -115,6 +118,106 @@ test('Arabic chat and editor use native regular typography without flattening em
       el.lang = 'ja'
     })
     await expect(page.locator('#editor')).toHaveCSS('font-family', /Hiragino Sans/)
+  } finally {
+    await app.close()
+    await server.close()
+  }
+})
+
+test('Arabic skins own distinct tokenized bubbles at logical start and end', async ({
+  browserName: _browserName
+}, testInfo) => {
+  const { app, page, server } = await openFixture()
+
+  try {
+    const user = page.locator('.composer-human-message')
+    const assistant = page.locator('[data-slot="aui_assistant-message-content"]')
+    const dialogFill = await page.evaluate(() =>
+      getComputedStyle(document.documentElement).getPropertyValue('--ui-chat-bubble-background')
+    )
+
+    for (const mode of ['light', 'dark'] as const) {
+      await page.evaluate(mode => {
+        const root = document.documentElement
+        root.classList.toggle('dark', mode === 'dark')
+        // ThemeProvider normalizes a -light suffix; cover both names below.
+        root.dataset.hermesTheme = 'hermes-arabi'
+        root.dataset.hermesMode = mode
+      }, mode)
+
+      for (const direction of ['rtl', 'ltr'] as const) {
+        await page.evaluate(direction => {
+          document.documentElement.dir = direction
+        }, direction)
+        await page.screenshot({ path: testInfo.outputPath(`bubbles-${mode}-${direction}.png`) })
+        await expect(user).toHaveCSS('border-top-left-radius', '18px')
+        await expect.soft(assistant).toHaveCSS('border-bottom-right-radius', '18px')
+        await expect.soft(user).toHaveCSS('padding-top', '7px')
+        await expect.soft(assistant).toHaveCSS('padding-bottom', '7px')
+        await expect
+          .soft(user)
+          .toHaveCSS('background-color', mode === 'light' ? 'rgb(28, 28, 28)' : 'rgba(245, 245, 245, 0.18)')
+        await expect.soft(user).toHaveCSS('color', mode === 'light' ? 'rgb(255, 255, 255)' : 'rgb(245, 245, 245)')
+        await expect
+          .soft(assistant)
+          .toHaveCSS('background-color', mode === 'light' ? 'rgba(28, 28, 28, 0.06)' : 'rgba(245, 245, 245, 0.04)')
+
+        const bounds = await page.locator('[data-slot="aui_thread-content"]').evaluate(el => {
+          const rect = el.getBoundingClientRect()
+          const style = getComputedStyle(el)
+          const left = Number.parseFloat(style.paddingLeft)
+          const right = Number.parseFloat(style.paddingRight)
+
+          return { x: rect.x + left, width: rect.width - left - right }
+        })
+
+        const u = (await user.boundingBox())!
+        const a = (await assistant.boundingBox())!
+        expect.soft(u.width).toBeLessThanOrEqual(640)
+        expect.soft(a.width).toBeLessThanOrEqual(640)
+        expect
+          .soft(
+            Math.abs(
+              (direction === 'rtl' ? u.x : u.x + u.width) -
+                (direction === 'rtl' ? bounds!.x : bounds!.x + bounds!.width)
+            )
+          )
+          .toBeLessThan(1)
+        expect
+          .soft(
+            Math.abs(
+              (direction === 'rtl' ? a.x + a.width : a.x) -
+                (direction === 'rtl' ? bounds!.x + bounds!.width : bounds!.x)
+            )
+          )
+          .toBeLessThan(1)
+      }
+    }
+
+    await page.evaluate(() => {
+      document.documentElement.dataset.hermesTheme = 'hermes-arabi-light'
+      document.documentElement.dataset.hermesMode = 'light'
+    })
+    await expect(user).toHaveCSS('background-color', 'rgb(28, 28, 28)')
+    // The skin's existing customCSS channel can override dedicated tokens only.
+    await page.addStyleTag({
+      content: ':root { --dt-chat-user-background: rgb(12, 34, 56); --dt-chat-bubble-radius: 23px; }'
+    })
+    await expect(user).toHaveCSS('background-color', 'rgb(12, 34, 56)')
+    await expect(assistant).toHaveCSS('border-top-left-radius', '23px')
+    await page.setViewportSize({ width: 320, height: 650 })
+    expect((await user.boundingBox())!.width).toBeLessThanOrEqual(272)
+    expect((await assistant.boundingBox())!.width).toBeLessThanOrEqual(272)
+    await page.evaluate(() => {
+      document.documentElement.classList.remove('dark')
+      document.documentElement.dataset.hermesTheme = 'nous'
+    })
+    await expect(assistant).toHaveCSS('background-color', 'rgba(0, 0, 0, 0)')
+    expect(
+      await page.evaluate(() =>
+        getComputedStyle(document.documentElement).getPropertyValue('--ui-chat-bubble-background')
+      )
+    ).toBe(dialogFill)
   } finally {
     await app.close()
     await server.close()
