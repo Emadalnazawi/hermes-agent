@@ -126,7 +126,7 @@ export const OverlayNavItem = memo(function OverlayNavItem({
       aria-current={current ? 'page' : undefined}
       aria-pressed={pressed}
       className={cn(
-        'row-hover flex h-7 w-full shrink-0 items-center justify-start gap-2 rounded-md border px-2 text-left text-[length:var(--conversation-text-font-size)] font-normal transition-colors',
+        'row-hover flex h-7 w-full shrink-0 items-center justify-start gap-2 rounded-md border px-2 text-start text-[length:var(--conversation-text-font-size)] font-normal transition-colors',
         nested
           ? active
             ? current
@@ -254,7 +254,7 @@ export function OverlayNav({ footer, groups }: { footer?: ReactNode; groups: Ove
                     aria-controls={childrenId}
                     aria-expanded={expanded}
                     aria-label={`${expanded ? t.common.collapse : t.common.expand}: ${group.label}`}
-                    className="absolute right-0.5 top-1/2 -translate-y-1/2"
+                    className="absolute end-0.5 top-1/2 -translate-y-1/2"
                     data-tour={`nav-toggle-${group.id}`}
                     onClick={() => setDisclosures(previous => ({ ...previous, [group.id]: !expanded }))}
                     size="icon-xs"
@@ -267,7 +267,7 @@ export function OverlayNav({ footer, groups }: { footer?: ReactNode; groups: Ove
               </div>
               {hasChildren && (
                 <div
-                  className={cn('ml-3.5 flex flex-col gap-0.5 pl-1.5', !expanded && 'hidden')}
+                  className={cn('ms-3.5 flex flex-col gap-0.5 ps-1.5', !expanded && 'hidden')}
                   hidden={!expanded}
                   id={childrenId}
                 >
@@ -283,7 +283,7 @@ export function OverlayNav({ footer, groups }: { footer?: ReactNode; groups: Ove
                         onClick={child.onSelect}
                       />
                       {child.active && Boolean(child.children?.length) && (
-                        <div className="ml-3 flex flex-col gap-0.5 pl-1.5">
+                        <div className="ms-3 flex flex-col gap-0.5 ps-1.5">
                           {child.children?.map(grandchild => (
                             <OverlayNavItem
                               active={grandchild.active}

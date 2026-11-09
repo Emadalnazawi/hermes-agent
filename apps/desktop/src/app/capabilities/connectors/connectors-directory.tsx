@@ -186,7 +186,7 @@ function Group({
         <div>
           <h2>
             {group.id === 'local' ? where : copy[group.id]}
-            <span className="ml-2 font-normal tabular-nums text-(--ui-text-tertiary)">{group.cards.length}</span>
+            <span className="ms-2 font-normal tabular-nums text-(--ui-text-tertiary)">{group.cards.length}</span>
           </h2>
           {group.id === 'connected' && showsAttentionFirst(group) ? <p>{copy.connectedNote}</p> : null}
           {group.id === 'off' ? <p>{copy.offNote}</p> : null}
