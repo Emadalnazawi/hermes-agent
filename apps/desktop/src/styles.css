@@ -1869,6 +1869,26 @@ body.guest-pointer-lock :is(webview, iframe) {
   text-align: start;
 }
 
+/* Arabic needs the native system face before an installed Segoe UI (the
+   Windows face otherwise wins even on macOS). Scope like the CJK editor rules,
+   but include transcript prose; leave semantic strong/headings and code alone. */
+[data-slot='aui_thread-content']:lang(ar),
+[data-slot='composer-rich-input']:lang(ar) {
+  --conversation-text-base-size: 14px;
+  --conversation-base-line-height: 20px;
+  font-family: system-ui, 'SF Arabic', '.SF Arabic', 'Geeza Pro', 'Noto Sans Arabic', sans-serif;
+  font-weight: 400;
+}
+
+[data-slot='aui_assistant-message-content']:lang(ar),
+[data-slot='aui_user-inline-text']:lang(ar) {
+  line-height: calc(22px * var(--chat-text-scale, 1));
+}
+
+[data-slot='aui_assistant-message-content']:lang(ar) .aui-md {
+  line-height: inherit;
+}
+
 /* Keyed on the UI language, not installed fonts: PingFang/YaHei ship on every
    Mac/Windows box and would restyle Latin text for everyone. CJK-first is what
    makes shared codepoints (…—“”) render full-width. */

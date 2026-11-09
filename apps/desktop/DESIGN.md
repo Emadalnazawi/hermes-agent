@@ -379,6 +379,13 @@ It does not resize the sidebar, settings, toolbars, media, or pane geometry.
 Conversation size and line-height tokens are derived inside the transcript/editor
 from their root base tokens; do not multiply the global tokens or nest CSS zoom.
 
+Arabic transcript/editor text (`:lang(ar)`) uses native system/Arabic faces
+before generic sans-serif, at weight 400. Do not append the Segoe-first UI
+stack: an installed Segoe UI otherwise takes the Arabic glyph fallback on macOS.
+The Arabic base is 14px, body leading 20px and transcript prose leading 22px;
+the user's Chat Text Size multiplier still applies. Preserve semantic bold,
+headings and isolated-LTR code; do not flatten descendant weights.
+
 ## Chat, tools & boot surfaces
 
 - The thread timeline rail sits at inline-end in both LTR and RTL. Its visible
