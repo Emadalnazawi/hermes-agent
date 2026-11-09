@@ -408,8 +408,9 @@ block padding; `.sand-vhurb8` / `.sand-11ct0s3` → 12px inline padding;
 `index.eager-app-Bpx4jnxc.js` assigns those classes in `JX.message` / `JX.user`.
 Group starts (`.sand-19snzy6`) add `--cursor-spacing-3` = 12px; continuation
 exceptions are separate. This skin retains Hermes's existing turn grouping.
-The requested 640px cap is intentional: this Grok version's `.sand-1q8iv8g`
-actually uses `min(80%,560px,100% - 82px)`, not 640px.
+The cap follows Grok's `.sand-1q8iv8g` exactly:
+`min(80%, 560px, 100% - 82px)`. Apply the percentage cap once on the user
+action anchor, not again on its nested bubble; assistant content owns its cap.
 
 ### Arabic skin composer
 
@@ -433,9 +434,13 @@ Verified source selectors in Grok's `index-FlssbLEI.css` (minified line 1):
 `index.eager-app-Bpx4jnxc.js`, `q$.frame` / `J$` (`sand-kit-message-input-frame`)
 connects the background/border/shadow classes to the real prompt frame. `xjt=.5`
 sets a 0.5px border via `.sand-1mw0n95`; `q$.radius` / `.sand-7yrpt8` uses
-18px expanded / 22px compact. Hermes's editor + controls use the expanded 18px
-radius; the dedicated token permits a skin to choose 22px without a new layout
-state machine. The text field itself (`C1.field`, `.sand-jbqb8w`) is transparent.
+18px expanded / 22px compact. Hermes already distinguishes the normal inline
+composer from the expanded/stacked editor in `useComposerMetrics`; that existing
+`stacked` result stamps `data-composer-expanded` on the root. The normal state
+uses `--dt-chat-composer-radius` = 22px; the stacked state uses
+`--dt-chat-composer-expanded-radius` = 18px, including width-forced stacking.
+No new size observer or keystroke subscription is added. The text field itself
+(`C1.field`, `.sand-jbqb8w`) is transparent.
 
 The frame shadow `.sand-jmgmaz` is literal in both appearances:
 `0 2px 8px -1px #0000000d, 0 1px 2px #00000008, 0 0 0 1px #e4e4e40a`.

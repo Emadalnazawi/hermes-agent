@@ -149,6 +149,12 @@ test('Arabic skins own distinct tokenized bubbles at logical start and end', asy
   try {
     const user = page.locator('.composer-human-message')
     const assistant = page.locator('[data-slot="aui_assistant-message-content"]')
+    await page.locator('#user-text').evaluate(el => {
+      el.textContent = 'نص تجريبي طويل لاختبار عرض الفقاعة '.repeat(8)
+    })
+    await page.locator('#arabic-prose').evaluate(el => {
+      el.textContent = 'رد تجريبي طويل لاختبار الحد الأقصى للعرض '.repeat(8)
+    })
 
     const dialogFill = await page.evaluate(() =>
       getComputedStyle(document.documentElement).getPropertyValue('--ui-chat-bubble-background')
@@ -185,8 +191,10 @@ test('Arabic skins own distinct tokenized bubbles at logical start and end', asy
 
         const u = (await user.boundingBox())!
         const a = (await assistant.boundingBox())!
-        expect.soft(u.width).toBeLessThanOrEqual(640)
-        expect.soft(a.width).toBeLessThanOrEqual(640)
+        const cap = Math.min(bounds.width * 0.8, 560, bounds.width - 82)
+        expect.soft(u.width).toBeLessThanOrEqual(cap + 0.5)
+        expect.soft(u.width).toBeCloseTo(cap, 0)
+        expect.soft(a.width).toBeLessThanOrEqual(cap + 0.5)
         expect
           .soft(
             Math.abs(
@@ -254,7 +262,10 @@ test('Arabic composer matches Grok rest, hover, focus, selection and caret in bo
         'border-color',
         mode === 'light' ? 'rgba(28, 28, 28, 0.12)' : 'rgba(245, 245, 245, 0.1)'
       )
+      await expect(surface).toHaveCSS('border-radius', '22px')
+      await page.locator('[data-slot="composer-root"]').evaluate(el => el.setAttribute('data-composer-expanded', ''))
       await expect(surface).toHaveCSS('border-radius', '18px')
+      await page.locator('[data-slot="composer-root"]').evaluate(el => el.removeAttribute('data-composer-expanded'))
       await surface.hover()
       const focused = mode === 'light' ? 'rgba(28, 28, 28, 0.24)' : 'rgba(245, 245, 245, 0.22)'
       await expect(surface).toHaveCSS('border-color', focused)

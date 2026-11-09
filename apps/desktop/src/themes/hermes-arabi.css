@@ -10,15 +10,14 @@
   --dt-chat-bubble-radius: 18px;
   --dt-chat-bubble-padding-block: 7px;
   --dt-chat-bubble-padding-inline: 12px;
-  --dt-chat-bubble-max-width: min(640px, 100%);
+  --dt-chat-bubble-max-width: min(80%, 560px, 100% - 82px);
   --dt-chat-composer-background: #1f1f1f;
   --dt-chat-composer-foreground: #f5f5f5;
   --dt-chat-composer-border: #f5f5f51a;
   --dt-chat-composer-border-focus: #f5f5f538;
   --dt-chat-composer-border-width: 0.5px;
-  /* Hermes's editor + controls use Grok's expanded-frame treatment. The
-     compact Grok frame is 22px; skins may opt into that through this token. */
-  --dt-chat-composer-radius: 18px;
+  --dt-chat-composer-radius: 22px;
+  --dt-chat-composer-expanded-radius: 18px;
   --dt-chat-composer-shadow: 0 2px 8px -1px #0000000d, 0 1px 2px #00000008, 0 0 0 1px #e4e4e40a;
   --dt-chat-composer-selection-background: #f5f5f514;
   --dt-chat-composer-selection-foreground: var(--dt-chat-composer-foreground);
@@ -41,7 +40,7 @@
 
 :root:is([data-hermes-theme='hermes-arabi'], [data-hermes-theme='hermes-arabi-light']) {
   :is(.composer-human-message, [data-slot='aui_assistant-message-content']) {
-    max-inline-size: var(--dt-chat-bubble-max-width);
+    max-inline-size: 100%;
     border-radius: var(--dt-chat-bubble-radius);
     padding-block: var(--dt-chat-bubble-padding-block);
     border: 0;
@@ -64,8 +63,14 @@
     color: var(--dt-chat-user-foreground);
   }
 
+  [data-slot='aui_edit-composer-root'] {
+    max-inline-size: var(--dt-chat-bubble-max-width);
+    margin-inline-start: auto;
+  }
+
   [data-slot='aui_assistant-message-content'] {
     inline-size: fit-content;
+    max-inline-size: var(--dt-chat-bubble-max-width);
     margin-inline-start: 0;
     margin-inline-end: auto;
     padding-inline: var(--dt-chat-bubble-padding-inline);
@@ -84,7 +89,12 @@
     /* Override the normal rest/scrolled glass ladder once; backing, editor
        surface and docked status chrome keep sharing the same fill. */
     --composer-fill: var(--dt-chat-composer-background);
-    border-radius: var(--dt-chat-composer-radius);
+    --composer-skin-radius: var(--dt-chat-composer-radius);
+    border-radius: var(--composer-skin-radius);
+  }
+
+  [data-slot='composer-root'][data-composer-expanded] {
+    --composer-skin-radius: var(--dt-chat-composer-expanded-radius);
   }
 
   [data-slot='composer-surface'] {
@@ -92,7 +102,7 @@
     border: var(--dt-chat-composer-border-width) solid var(--dt-chat-composer-border);
     /* Base styles intentionally pin border color with !important. */
     border-color: var(--dt-chat-composer-border) !important;
-    border-radius: var(--dt-chat-composer-radius);
+    border-radius: var(--composer-skin-radius);
     box-shadow: var(--dt-chat-composer-shadow);
   }
 
