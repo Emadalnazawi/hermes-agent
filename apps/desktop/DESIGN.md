@@ -411,6 +411,41 @@ exceptions are separate. This skin retains Hermes's existing turn grouping.
 The requested 640px cap is intentional: this Grok version's `.sand-1q8iv8g`
 actually uses `min(80%,560px,100% - 82px)`, not 640px.
 
+### Arabic skin composer
+
+The same skin stylesheet exposes `--dt-chat-composer-*` tokens for background,
+foreground, resting/focused border, border width, radius, shadow, selection
+background/foreground and caret. The shared `--composer-fill` bridge preserves
+one opaque fill across scrolled/focused/docked states. Only composer-root editors
+receive composer ink/selection/caret; inline user-message editing keeps user ink.
+The existing skin `customCSS` channel can override each token in `:root`.
+
+Verified source selectors in Grok's `index-FlssbLEI.css` (minified line 1):
+
+| Concern | Selector / owner | Light | Dark |
+| --- | --- | --- | --- |
+| Background | `.sand-10e981r`, `--sand-bg-elevated` | `#ffffff` | `#1f1f1f` |
+| Rest border | `.sand-17tbahu`, `--sand-border-secondary-translucent` | `#1c1c1c1f` | `#f5f5f51a` |
+| Hover / focus | `.sand-iv08qi:hover` / `.sand-sb55g1:focus-within`, `--sand-border-primary-translucent` | `#1c1c1c3d` | `#f5f5f538` |
+| Selection | `.ui-ostxn8 .ProseMirror::selection`, `.ui-btkxa0 .ProseMirror ::selection`, `--cursor-bg-active` → `--sand-bg-active` | `#1c1c1c14` | `#f5f5f514` |
+| Caret | `.ui-zx44go`, `--cursor-text-primary` → `--sand-text-primary` | `#1c1c1c` | `#f5f5f5` |
+
+`index.eager-app-Bpx4jnxc.js`, `q$.frame` / `J$` (`sand-kit-message-input-frame`)
+connects the background/border/shadow classes to the real prompt frame. `xjt=.5`
+sets a 0.5px border via `.sand-1mw0n95`; `q$.radius` / `.sand-7yrpt8` uses
+18px expanded / 22px compact. Hermes's editor + controls use the expanded 18px
+radius; the dedicated token permits a skin to choose 22px without a new layout
+state machine. The text field itself (`C1.field`, `.sand-jbqb8w`) is transparent.
+
+The frame shadow `.sand-jmgmaz` is literal in both appearances:
+`0 2px 8px -1px #0000000d, 0 1px 2px #00000008, 0 0 0 1px #e4e4e40a`.
+Focus changes the neutral border, not the shadow. Do not substitute the unrelated
+blue `--sand-border-focus-primary` ring or generic popover-shadow tokens here.
+Resolved theme colors were cross-checked against the audit's
+`resolved-theme-tokens.json`; the `Y5n` bridge maps cursor aliases to Sand tokens.
+The selection rules are shared editor rules (also bundled in
+`chunk-document-page-wxkGlv0G.js`), not a guessed blue browser selection.
+
 ## Chat, tools & boot surfaces
 
 - The thread timeline rail sits at inline-end in both LTR and RTL. Its visible

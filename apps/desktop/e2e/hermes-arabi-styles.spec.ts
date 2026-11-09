@@ -2,6 +2,7 @@ import { mkdtempSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import * as path from 'node:path'
 
+import type { Page } from '@playwright/test'
 import { createServer } from 'vite'
 
 import { resolveElectronBinary } from './electron-binary'
@@ -36,6 +37,25 @@ const fixture = `
   </div>
 </main>`
 
+// The real ThemeProvider writes palette seeds as well as the dark class. A
+// class-only mock leaves light foreground seeds in a dark screenshot. Use the
+// audited synthetic skin palette, never a signed-in window or user skin file.
+async function setFixtureMode(page: Page, mode: 'light' | 'dark') {
+  await page.evaluate(mode => {
+    const root = document.documentElement
+    root.classList.toggle('dark', mode === 'dark')
+    root.dataset.hermesTheme = 'hermes-arabi'
+    root.dataset.hermesMode = mode
+    root.style.colorScheme = mode
+    root.style.setProperty('--theme-foreground', mode === 'dark' ? '#f5f5f5' : '#1c1c1c')
+    root.style.setProperty('--theme-background-seed', mode === 'dark' ? '#121212' : '#fcfcfc')
+    root.style.setProperty('--theme-card-seed', mode === 'dark' ? '#161616' : '#ffffff')
+    root.style.setProperty('--theme-neutral-card', mode === 'dark' ? '#161616' : '#ffffff')
+    root.style.setProperty('--theme-mix-chrome', '100%')
+    ;(document.activeElement as HTMLElement)?.blur()
+  }, mode)
+}
+
 async function openFixture() {
   const temporary = mkdtempSync(path.join(tmpdir(), 'hermes-arabi-styles-'))
   const main = path.join(temporary, 'main.cjs')
@@ -65,6 +85,8 @@ app.whenReady().then(() => {
     document.documentElement.dir = 'rtl'
   })
 
+  await setFixtureMode(page, 'light')
+
   return { app, page, server }
 }
 
@@ -75,12 +97,7 @@ test('Arabic chat and editor use native regular typography without flattening em
 
   try {
     for (const mode of ['light', 'dark'] as const) {
-      await page.evaluate(mode => {
-        const root = document.documentElement
-        root.classList.toggle('dark', mode === 'dark')
-        root.dataset.hermesTheme = mode === 'dark' ? 'hermes-arabi' : 'hermes-arabi-light'
-        root.dataset.hermesMode = mode
-      }, mode)
+      await setFixtureMode(page, mode)
 
       const styles = await page.locator('#arabic-prose').evaluate(el => {
         const s = getComputedStyle(el)
@@ -115,7 +132,7 @@ test('Arabic chat and editor use native regular typography without flattening em
 
     // Language scoping must leave English and the existing CJK editor rules alone.
     await page.locator('#editor').evaluate(el => {
-      el.lang = 'ja'
+      el.setAttribute('lang', 'ja')
     })
     await expect(page.locator('#editor')).toHaveCSS('font-family', /Hiragino Sans/)
   } finally {
@@ -132,18 +149,13 @@ test('Arabic skins own distinct tokenized bubbles at logical start and end', asy
   try {
     const user = page.locator('.composer-human-message')
     const assistant = page.locator('[data-slot="aui_assistant-message-content"]')
+
     const dialogFill = await page.evaluate(() =>
       getComputedStyle(document.documentElement).getPropertyValue('--ui-chat-bubble-background')
     )
 
     for (const mode of ['light', 'dark'] as const) {
-      await page.evaluate(mode => {
-        const root = document.documentElement
-        root.classList.toggle('dark', mode === 'dark')
-        // ThemeProvider normalizes a -light suffix; cover both names below.
-        root.dataset.hermesTheme = 'hermes-arabi'
-        root.dataset.hermesMode = mode
-      }, mode)
+      await setFixtureMode(page, mode)
 
       for (const direction of ['rtl', 'ltr'] as const) {
         await page.evaluate(direction => {
@@ -208,8 +220,8 @@ test('Arabic skins own distinct tokenized bubbles at logical start and end', asy
     await page.setViewportSize({ width: 320, height: 650 })
     expect((await user.boundingBox())!.width).toBeLessThanOrEqual(272)
     expect((await assistant.boundingBox())!.width).toBeLessThanOrEqual(272)
+    await setFixtureMode(page, 'light')
     await page.evaluate(() => {
-      document.documentElement.classList.remove('dark')
       document.documentElement.dataset.hermesTheme = 'nous'
     })
     await expect(assistant).toHaveCSS('background-color', 'rgba(0, 0, 0, 0)')
@@ -218,6 +230,80 @@ test('Arabic skins own distinct tokenized bubbles at logical start and end', asy
         getComputedStyle(document.documentElement).getPropertyValue('--ui-chat-bubble-background')
       )
     ).toBe(dialogFill)
+  } finally {
+    await app.close()
+    await server.close()
+  }
+})
+
+test('Arabic composer matches Grok rest, hover, focus, selection and caret in both modes', async ({
+  browserName: _browserName
+}, testInfo) => {
+  const { app, page, server } = await openFixture()
+
+  try {
+    const surface = page.locator('[data-slot="composer-surface"]')
+    const editor = page.locator('#editor')
+
+    for (const mode of ['light', 'dark'] as const) {
+      await setFixtureMode(page, mode)
+      await page.mouse.move(0, 0)
+      await page.screenshot({ path: testInfo.outputPath(`composer-${mode}-rest.png`) })
+      await expect(surface).toHaveCSS('background-color', mode === 'light' ? 'rgb(255, 255, 255)' : 'rgb(31, 31, 31)')
+      await expect(surface).toHaveCSS(
+        'border-color',
+        mode === 'light' ? 'rgba(28, 28, 28, 0.12)' : 'rgba(245, 245, 245, 0.1)'
+      )
+      await expect(surface).toHaveCSS('border-radius', '18px')
+      await surface.hover()
+      const focused = mode === 'light' ? 'rgba(28, 28, 28, 0.24)' : 'rgba(245, 245, 245, 0.22)'
+      await expect(surface).toHaveCSS('border-color', focused)
+      await editor.click()
+      await page.mouse.move(0, 0)
+      await expect(surface).toHaveCSS('border-color', focused)
+      await expect(editor).toHaveCSS('background-color', 'rgba(0, 0, 0, 0)')
+      await expect(editor).toHaveCSS('caret-color', mode === 'light' ? 'rgb(28, 28, 28)' : 'rgb(245, 245, 245)')
+      const shadow = await surface.evaluate(el => getComputedStyle(el).boxShadow)
+      expect(shadow).toContain('0px 2px 8px -1px')
+      expect(shadow).toContain('rgba(0, 0, 0, 0.05)')
+      await page.screenshot({ path: testInfo.outputPath(`composer-${mode}-focus.png`), caret: 'initial' })
+      await editor.evaluate(el => {
+        const selection = window.getSelection()!
+        selection.selectAllChildren(el)
+      })
+
+      const selectionStyle = await editor.evaluate(el => ({
+        background: getComputedStyle(el, '::selection').backgroundColor,
+        color: getComputedStyle(el, '::selection').color
+      }))
+
+      expect(selectionStyle.background).toBe(mode === 'light' ? 'rgba(28, 28, 28, 0.08)' : 'rgba(245, 245, 245, 0.08)')
+      expect(selectionStyle.color).toBe(mode === 'light' ? 'rgb(28, 28, 28)' : 'rgb(245, 245, 245)')
+      await page.screenshot({ path: testInfo.outputPath(`composer-${mode}-selection.png`) })
+      await page.locator('[data-slot="composer-root"]').evaluate(el => {
+        el.setAttribute('data-thread-scrolled-up', '')
+      })
+      await expect(surface).toHaveCSS('background-color', mode === 'light' ? 'rgb(255, 255, 255)' : 'rgb(31, 31, 31)')
+      await page.locator('button').focus()
+      await expect(surface).toHaveCSS('border-color', focused)
+      await page.keyboard.press('Tab')
+      await page.evaluate(() => {
+        ;(document.activeElement as HTMLElement)?.blur()
+        window.getSelection()?.removeAllRanges()
+      })
+      await expect(surface).toHaveCSS(
+        'border-color',
+        mode === 'light' ? 'rgba(28, 28, 28, 0.12)' : 'rgba(245, 245, 245, 0.1)'
+      )
+    }
+
+    await page.addStyleTag({
+      content:
+        ':root { --dt-chat-composer-background: rgb(22, 33, 44); --dt-chat-composer-border-focus: rgb(12, 34, 56); }'
+    })
+    await editor.focus()
+    await expect(surface).toHaveCSS('background-color', 'rgb(22, 33, 44)')
+    await expect(surface).toHaveCSS('border-color', 'rgb(12, 34, 56)')
   } finally {
     await app.close()
     await server.close()
