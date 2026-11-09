@@ -3,6 +3,7 @@ import { mergeTranslations } from '@hermes/shared/i18n'
 import { arArtifacts } from './ar_artifacts'
 import { arAssistant } from './ar_assistant'
 import { arBatch1 } from './ar_batch_1'
+import { arBatch2 } from './ar_batch_2'
 import { arBoot } from './ar_boot'
 import { arCapabilities } from './ar_capabilities'
 import { arChat } from './ar_chat'
@@ -160,6 +161,9 @@ const arSections = {
 
 // Batch overlays deep-merge over the section files, so a nested group keeps its
 // existing Arabic siblings.
-export const arOverrides: TranslationOverrides = mergeTranslations<TranslationOverrides>(arSections, arBatch1)
+export const arOverrides: TranslationOverrides = mergeTranslations<TranslationOverrides>(
+  mergeTranslations<TranslationOverrides>(arSections, arBatch1),
+  arBatch2
+)
 
 export const ar = defineLocale(arOverrides)
