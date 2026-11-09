@@ -87,4 +87,22 @@ describe('usePanelTitlebar', () => {
 
     expect(element.style.getPropertyValue('--panel-titlebar-left')).toBe('172px')
   })
+
+  // The tree-group header is a flex row, so its spacers sit at the INLINE
+  // edges while the fixed clusters stay physical. In RTL the inline-start
+  // spacer is the physical right one; without the swap the drag handle slid
+  // under Settings / Layout editor and swallowed their clicks.
+  it.each([
+    ['ltr', '172px', '100px'],
+    ['rtl', '100px', '172px']
+  ])('maps the physical reservations onto inline edges in %s', (direction, start, end) => {
+    const element = window.document.createElement('div')
+    element.style.direction = direction
+    element.getBoundingClientRect = () => rect(0, 1000)
+    window.document.body.append(element)
+
+    renderHook(() => usePanelTitlebar({ current: element }, true, false))
+    expect(element.style.getPropertyValue('--panel-titlebar-start')).toBe(start)
+    expect(element.style.getPropertyValue('--panel-titlebar-end')).toBe(end)
+  })
 })

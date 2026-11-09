@@ -730,7 +730,7 @@ export function TreeGroup({
           style={topEdge ? { height: topHeaderHeight } : undefined}
         >
           {topEdge && (
-            <div aria-hidden="true" className="shrink-0" style={{ width: 'var(--panel-titlebar-left, 100%)' }} />
+            <div aria-hidden="true" className="shrink-0" style={{ width: 'var(--panel-titlebar-start, 100%)' }} />
           )}
           {pageHeader && headerVisible ? (
             <div
@@ -946,7 +946,7 @@ export function TreeGroup({
             />
           )}
           {topEdge && (
-            <div aria-hidden="true" className="shrink-0" style={{ width: 'var(--panel-titlebar-right, 0px)' }} />
+            <div aria-hidden="true" className="shrink-0" style={{ width: 'var(--panel-titlebar-end, 0px)' }} />
           )}
         </div>
       )}
