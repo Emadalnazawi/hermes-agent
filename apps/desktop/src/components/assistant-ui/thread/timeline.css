@@ -73,6 +73,21 @@
   }
 }
 
+/* Preview content is chat context, so follow the active surface palette rather
+   than the generic inverted tooltip. */
+.tooltip-bubble.timeline-preview-tooltip {
+  border: 1px solid var(--ui-stroke-secondary);
+  background: var(--dt-popover);
+  color: var(--dt-popover-foreground);
+  box-shadow: var(--shadow-md);
+}
+
+.tooltip-bubble.timeline-preview-tooltip [data-slot='tooltip-arrow'] {
+  fill: var(--dt-popover);
+  stroke: var(--ui-stroke-secondary);
+  stroke-width: 1px;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .thread-timeline-tick [data-slot='timeline-bar'] {
     transition: none;
