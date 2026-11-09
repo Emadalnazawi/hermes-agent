@@ -168,7 +168,7 @@ export function TimelineRail({ activeIndex, entries, loadingId, onJump }: Timeli
               label={entry.preview}
               placement="right-rail"
               sideOffset={8}
-              style={{ textAlign: 'right' }}
+              style={{ textAlign: 'start' }}
             >
               <button
                 aria-busy={loadingId === entry.id || undefined}

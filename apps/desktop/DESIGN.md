@@ -381,6 +381,10 @@ from their root base tokens; do not multiply the global tokens or nest CSS zoom.
 
 ## Chat, tools & boot surfaces
 
+- The thread timeline rail sits at inline-end in both LTR and RTL. Its visible
+  hit targets have a reserved content gutter, so neither ticks nor clicks cover
+  message text. Hiding the rail restores the normal content padding.
+
 - The transcript and composer are built on `@assistant-ui/react`. Extend the
   existing components under `src/components/assistant-ui` and
   `src/app/chat/composer`; do not fork a second markdown, message, tool-call, or
