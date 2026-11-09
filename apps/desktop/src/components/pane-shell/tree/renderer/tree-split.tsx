@@ -214,6 +214,8 @@ export function TreeSplit({
       const totalWeight = node.weights.reduce((a, b) => a + b, 0) || 1
       const pxPerWeight = totalPx / totalWeight
       const start = horizontal ? e.clientX : e.clientY
+      // Flex rows follow inline direction; pointer coordinates remain physical.
+      const inlineSign = horizontal && getComputedStyle(container).direction === 'rtl' ? -1 : 1
       const restoreCursor = document.body.style.cursor
       const restoreSelect = document.body.style.userSelect
 
@@ -460,7 +462,7 @@ export function TreeSplit({
       let done = false
 
       const onMove = (ev: PointerEvent) => {
-        const shift = (horizontal ? ev.clientX : ev.clientY) - start
+        const shift = ((horizontal ? ev.clientX : ev.clientY) - start) * inlineSign
         const direction = Math.sign(shift) as -1 | 0 | 1
 
         const allowCascade = cascadeDirection === null || direction === cascadeDirection

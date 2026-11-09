@@ -174,6 +174,27 @@ describe('TreeSplit sash drag cleanup', () => {
     vi.restoreAllMocks()
   })
 
+  it.each([
+    { movement: -60, expectedWidth: SIDEBAR_PX + 60 },
+    { movement: 60, expectedWidth: SIDEBAR_PX - 60 }
+  ])('follows the pointer in an RTL row (movement $movement)', ({ movement, expectedWidth }) => {
+    disposers = registerPanes()
+    const { kidA } = renderSplit()
+    kidA.parentElement!.style.direction = 'rtl'
+
+    pressSash(1000 - SIDEBAR_PX)
+
+    try {
+      moveTo(1000 - SIDEBAR_PX + movement)
+      flushRaf()
+      expect(kidA.style.flexBasis).toBe(`${expectedWidth}px`)
+    } finally {
+      releaseAt(1000 - SIDEBAR_PX + movement)
+    }
+
+    expect(panesMock.setPaneWidthOverride).toHaveBeenCalledWith(SIDEBAR_ID, expectedWidth)
+  })
+
   it('restores both seam wrapper styles when the released px is a store no-op', () => {
     disposers = registerPanes()
     // The override already holds the exact px the drag will end at.
