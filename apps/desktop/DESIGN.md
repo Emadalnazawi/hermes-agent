@@ -453,6 +453,12 @@ The selection rules are shared editor rules (also bundled in
 
 ## Chat, tools & boot surfaces
 
+- Horizontal split handles sit at the owning child's inline-start edge, beside
+  its previous logical sibling. RTL mirrors the handle and its paint, not the
+  pane indices; convert physical pointer deltas to inline direction exactly once.
+  Master-detail list seams follow the same rule. The zone editor retains its
+  physical canvas coordinates.
+
 - The thread timeline rail sits at inline-end in both LTR and RTL. Its visible
   hit targets have a reserved content gutter, so neither ticks nor clicks cover
   message text. Hiding the rail restores the normal content padding.
