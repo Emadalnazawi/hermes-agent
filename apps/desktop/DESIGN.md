@@ -339,6 +339,10 @@ The tab reads its surface token directly so glass tint is painted only once.
 Close glyphs keep a 24px hit area, including session tabs wrapped in context menus.
 `PaneTab` owns its `data-slot` marker after forwarded props so composition cannot
 disable that width or the label mask.
+`PaneTabLabel` preserves title case and isolates each title with `bdi dir="auto"`;
+all tabs ellipsize at the title's inline-end, including closeable tabs. English
+titles therefore keep their beginning in an Arabic shell. The hover mask remains
+the close control's separate hit-area treatment.
 
 Sticky user messages clip covered scrolling content, including the gap above
 them. Their wrappers stay unpainted; only the rounded user bubble owns a fill.
