@@ -1606,7 +1606,7 @@ function CommandPaletteBody({ onExited }: { onExited: () => void }) {
           <HighlightWatcher onValue={handleHighlight} />
           {activePage && (
             <button
-              className="flex w-full items-center gap-1.5 border-b border-border px-3 py-1.5 text-left text-xs text-muted-foreground transition-colors hover:text-foreground"
+              className="flex w-full items-center gap-1.5 border-b border-border px-3 py-1.5 text-start text-xs text-muted-foreground transition-colors hover:text-foreground"
               onClick={goBack}
               type="button"
             >
