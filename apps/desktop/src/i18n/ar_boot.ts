@@ -21,7 +21,7 @@ export const arBoot = {
       desktopBootFailed: 'فشل تشغيل سطح المكتب',
       gatewayConnectionLost: 'انقطع الاتصال بالبوابة',
       gatewayConnectionLostDetail:
-        'Still retrying in the background. You can keep reading and drafting — open Gateway settings if this persists.',
+        'لا تزال إعادة المحاولة جارية في الخلفية. يمكنك مواصلة القراءة وكتابة المسودات — افتح إعدادات البوابة إذا استمرت المشكلة.',
       gatewaySignInRequired: 'تسجيل الدخول للبوابة مطلوب',
       ipcBridgeUnavailable: 'جسر IPC لسطح المكتب غير متاح.'
     },

@@ -12,6 +12,11 @@ import { setRuntimeI18nLocale } from './runtime'
 afterEach(() => setRuntimeI18nLocale('en'))
 
 describe('Arabic shared chrome copy', () => {
+  it('localizes settings navigation labels rather than falling back to English', () => {
+    expect(ar.settings.sections.browser).toBe('المتصفح')
+    expect(ar.settings.nav.billing).toBe('الفوترة')
+  })
+
   it('updates every bundled preset consumer on a locale change, without changing user titles', () => {
     setRuntimeI18nLocale('en')
     const dispose = registerLayoutPresets()

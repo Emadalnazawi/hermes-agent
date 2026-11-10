@@ -292,6 +292,7 @@ export const arSettings = {
       completionSoundPreview: 'معاينة'
     },
     sections: {
+      browser: 'المتصفح',
       model: 'النموذج',
       chat: 'المحادثة',
       appearance: 'المظهر',

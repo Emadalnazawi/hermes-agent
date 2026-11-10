@@ -52,6 +52,7 @@ export const arCommon = {
     docs: 'الوثائق',
     done: 'تم',
     error: 'خطأ',
+    expand: 'توسيع',
     failed: 'فشل',
     free: 'مجاني',
     loading: 'جار التحميل...',

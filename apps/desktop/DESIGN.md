@@ -670,6 +670,8 @@ long transcript or a busy terminal.
   portaled menus and selects. Submenu arrows and keyboard navigation mirror together.
 - Every user-facing string goes through `useI18n()` (`src/i18n/context.tsx`).
   No literals in JSX.
+- The shared `Zoomable` viewer reuses common/desktop catalog labels for its
+  trigger and toolbar; callers supply only content-specific labels.
 - Bundled layout names come from `zones.presetNames` at shared registration and
   refresh on locale changes; user/plugin names remain untouched. Messaging and
   the gateway popover share `platformStatusLabel` and the messaging state catalog.
