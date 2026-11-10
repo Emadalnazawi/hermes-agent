@@ -428,6 +428,9 @@ background/foreground and caret. The shared `--composer-fill` bridge preserves
 one opaque fill across scrolled/focused/docked states. Only composer-root editors
 receive composer ink/selection/caret; inline user-message editing keeps user ink.
 The existing skin `customCSS` channel can override each token in `:root`.
+HUD's floating composer consumes these same tokens (with its original defaults
+for other skins); RTL uses the normal shared composer layout. Placeholder picks
+refresh when the locale resolves, even if the session has not changed.
 
 Verified source selectors in Grok's `index-FlssbLEI.css` (minified line 1):
 
