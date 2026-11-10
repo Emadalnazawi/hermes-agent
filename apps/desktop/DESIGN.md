@@ -212,9 +212,9 @@ Exit fades over 100ms and moves 0.125rem toward the anchor; reduced motion
 disables the exit animation. `OverflowTip` stays on its own longer delay
 (list titles must not trail while scanning). Bubbles use a 0.25rem radius.
 
-**Tooltip placement.** Choose intent through `placement`: `control` above (default), `toolbar` below, `row` to the right, and `left-rail` / `right-rail` inward. Explicit `side` and `align` override the preference. Radix flips and shifts for collisions, keeps the arrow attached, and hides detached triggers. Controls and toolbars use their owning pane as a boundary; row descriptions and rails may extend into the window. Use `boundary="viewport"` for an intentional escape. Short labels size to content; descriptions wrap within 24rem and the available space, in one rounded bubble.
+**Tooltip placement.** Choose intent through `placement`: `control` above (default), `toolbar` below, `row` at inline-end (left in RTL), and physical `left-rail` / `right-rail` inward. Explicit `side` and `align` override the preference. Radix flips and shifts for collisions, keeps the arrow attached, and hides detached triggers. Controls and toolbars use their owning pane as a boundary; row descriptions and rails may extend into the window. Use `boundary="viewport"` for an intentional escape. Short labels size to content; descriptions wrap within 24rem and the available space, in one rounded bubble.
 
-**Slash descriptions.** Keep autocomplete rows single-line and ellipsized, but reveal the complete catalog description to the right of the hovered row. Use the shared bounded tooltip, collision padding, and word wrapping; it must not intercept row selection. Catalog and completion producers preserve the full author-supplied description.
+**Slash descriptions.** Keep autocomplete rows single-line and ellipsized, but reveal the complete catalog description at inline-end of the hovered row. Use the shared bounded tooltip, collision padding, and word wrapping; it must not intercept row selection. Catalog and completion producers preserve the full author-supplied description.
 
 **Model search.** Model filters and their highlighted labels treat hyphens, dots, underscores and spaces equivalently. Preserve original label spelling inside marks. The shared highlighter remains literal for other surfaces such as the command palette; model callers explicitly opt in. Model identifier search does not use dictionary spellcheck.
 
@@ -231,6 +231,12 @@ Notes:
 - Polymorph with `asChild` when the button must render as a link/Slot.
 
 ## Badges — one component
+
+Shared toast content uses logical padding/margins; its explicitly named
+`bottom-right` placement remains physical. Split buttons join at logical edges
+and reuse the localized alternate-action label, without per-screen RTL overrides.
+Select indicators and dialog close buttons already use logical end positioning;
+popover arrow rotations and centered dialog transforms remain physical geometry.
 
 `src/components/ui/badge.tsx`. Variants: `default` (tinted primary), `muted`,
 `warn`, `destructive`, `outline`, `solid` (primary fill — icon-corner counts).
