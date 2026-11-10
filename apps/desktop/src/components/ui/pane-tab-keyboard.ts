@@ -1,5 +1,7 @@
 import { type FocusEvent, type KeyboardEvent, type RefObject, useLayoutEffect, useRef, useState } from 'react'
 
+import { writingDirection } from '@/lib/writing-direction'
+
 /** Focus belongs to the strip, not its active pane. Keep it through tab closes
  * and the vertical-rail → horizontal-strip remount when a zone is restored. */
 export function usePaneTabKeyboard(ids: readonly string[], activeId: string, root: RefObject<HTMLElement | null>) {
@@ -65,6 +67,10 @@ export function usePaneTabKeyboard(ids: readonly string[], activeId: string, roo
 
       const list = event.currentTarget.closest('[role="tablist"]')
       const vertical = list?.getAttribute('aria-orientation') === 'vertical'
+      // An RTL strip lays its tabs out right-to-left, so the visual "next" tab is
+      // ArrowLeft. Read the computed direction rather than the locale: the strip
+      // itself may sit in an LTR pane inside an RTL app (or the reverse).
+      const rtl = list ? writingDirection(list) === 'rtl' : false
       const index = ids.indexOf(id)
       let nextIndex: number
 
@@ -79,12 +85,12 @@ export function usePaneTabKeyboard(ids: readonly string[], activeId: string, roo
 
           break
 
-        case vertical ? 'ArrowUp' : 'ArrowLeft':
+        case vertical ? 'ArrowUp' : rtl ? 'ArrowRight' : 'ArrowLeft':
           nextIndex = (index - 1 + ids.length) % ids.length
 
           break
 
-        case vertical ? 'ArrowDown' : 'ArrowRight':
+        case vertical ? 'ArrowDown' : rtl ? 'ArrowLeft' : 'ArrowRight':
           nextIndex = (index + 1) % ids.length
 
           break

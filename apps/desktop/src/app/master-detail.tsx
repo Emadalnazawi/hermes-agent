@@ -18,6 +18,7 @@ import { Switch } from '@/components/ui/switch'
 import { Tip } from '@/components/ui/tooltip'
 import { useI18n } from '@/i18n'
 import { cn } from '@/lib/utils'
+import { inlineDirectionSign } from '@/lib/writing-direction'
 import {
   $paneHeightOverride,
   $paneState,
@@ -90,7 +91,7 @@ export function MasterDetail({
 
     event.preventDefault()
     const startX = event.clientX
-    const inlineSign = getComputedStyle(grid).direction === 'rtl' ? -1 : 1
+    const inlineSign = inlineDirectionSign(grid)
     const startWidth = (grid.children[0] as HTMLElement).getBoundingClientRect().width
     const max = Math.max(SPLIT_MIN_LEFT_PX, grid.getBoundingClientRect().width - SPLIT_MIN_RIGHT_PX)
     setDragging(true)

@@ -14,6 +14,7 @@ import { useContributions } from '@/contrib/react/use-contributions'
 import { guardGuestPointers } from '@/lib/guest-pointer-guard'
 import { rafCoalesce } from '@/lib/raf-coalesce'
 import { cn } from '@/lib/utils'
+import { inlineDirectionSign } from '@/lib/writing-direction'
 import { $paneStates, type PaneStateSnapshot, setPaneHeightOverride, setPaneWidthOverride } from '@/store/panes'
 
 import { $layoutEditMode, $layoutEditRevealsHidden } from '../../edit-mode'
@@ -215,7 +216,7 @@ export function TreeSplit({
       const pxPerWeight = totalPx / totalWeight
       const start = horizontal ? e.clientX : e.clientY
       // Flex rows follow inline direction; pointer coordinates remain physical.
-      const inlineSign = horizontal && getComputedStyle(container).direction === 'rtl' ? -1 : 1
+      const inlineSign = horizontal ? inlineDirectionSign(container) : 1
       const restoreCursor = document.body.style.cursor
       const restoreSelect = document.body.style.userSelect
 
