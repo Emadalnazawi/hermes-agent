@@ -645,6 +645,11 @@ long transcript or a busy terminal.
 
 ## i18n
 
+- Numeric stat values (`tabular-nums`) are isolated LTR fragments; shared statusbar
+  labels/details use `bdi dir="auto"`. Keep row order label then value so flex
+  places them at inline-start/end. Usage percentages use `formatPercent` and the
+  active locale, with isolated interpolation in Arabic sentences.
+
 - The root `I18nProvider` supplies Radix direction from the active locale, including
   portaled menus and selects. Submenu arrows and keyboard navigation mirror together.
 - Every user-facing string goes through `useI18n()` (`src/i18n/context.tsx`).

@@ -1,6 +1,8 @@
 // Arabic translations batch 1 (approved by Emad). Glossary: keep Hermes, Terminal(s),
 // Webhooks, Tokens, MCP, API, GPU, RAM, SSH, JSON, GPT-Live and Nous in English;
 // Skills = المهارات, Memory = الذاكرة. Deep-merged over the section overlays in ar.ts.
+import { formatPercent } from '@/lib/usage-percent'
+
 import type { TranslationOverrides } from './define-locale'
 
 export const arBatch1 = {
@@ -173,7 +175,7 @@ export const arBatch1 = {
         },
         empty: 'لا توجد بيانات سياق بعد',
         loading: 'جارٍ تحميل التفاصيل…',
-        percentFull: percent => `ممتلئ ${percent}%`,
+        percentFull: percent => `ممتلئ \u2068${formatPercent(percent / 100, 'ar')}\u2069`,
         title: 'استخدام السياق',
         tokenSummary: (used, max) => `${used} / ${max} Tokens`
       },

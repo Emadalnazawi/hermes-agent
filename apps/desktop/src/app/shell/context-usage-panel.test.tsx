@@ -2,6 +2,7 @@ import { cleanup, render, screen, waitFor } from '@testing-library/react'
 import { renderHook } from '@testing-library/react'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 
+import { I18nProvider } from '@/i18n'
 import type { ContextBreakdown, UsageStats } from '@/types/hermes'
 
 import { ContextMeterDetail, ContextUsagePanel } from './context-usage-panel'
@@ -87,6 +88,19 @@ describe('useContextBreakdown', () => {
 })
 
 describe('ContextUsagePanel', () => {
+  it('isolates localized Arabic percentages and keeps category values after labels', () => {
+    const { container } = render(
+      <I18nProvider configClient={null} initialLocale="ar">
+        <ContextUsagePanel breakdown={breakdown} loading={false} usage={usage} />
+      </I18nProvider>
+    )
+    const percent = new Intl.NumberFormat('ar', { style: 'percent' }).format(0.47)
+
+    expect(screen.getByText(`ممتلئ \u2068${percent}\u2069`)).toBeTruthy()
+    const row = container.querySelector('li')!
+    expect(row.lastElementChild?.tagName).toBe('BDI')
+    expect(row.lastElementChild?.getAttribute('dir')).toBe('ltr')
+  })
   it('marks estimates but preserves the provider-usage header', () => {
     for (const estimated of [true, false]) {
       const { container, unmount } = render(
