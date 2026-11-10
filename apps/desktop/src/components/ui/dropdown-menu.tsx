@@ -469,7 +469,9 @@ function DropdownMenuSubTrigger({
       {...hoverProps}
     >
       {children}
-      {!hideChevron && <Codicon className="ms-auto text-(--ui-text-tertiary)" name="chevron-right" size="1rem" />}
+      {!hideChevron && (
+        <Codicon className="ms-auto text-(--ui-text-tertiary) rtl:rotate-180" name="chevron-right" size="1rem" />
+      )}
     </DropdownMenuPrimitive.SubTrigger>
   )
 }

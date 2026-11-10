@@ -645,6 +645,8 @@ long transcript or a busy terminal.
 
 ## i18n
 
+- The root `I18nProvider` supplies Radix direction from the active locale, including
+  portaled menus and selects. Submenu arrows and keyboard navigation mirror together.
 - Every user-facing string goes through `useI18n()` (`src/i18n/context.tsx`).
   No literals in JSX.
 - **Update all locales together** — every catalog registered in

@@ -139,7 +139,7 @@ function ContextMenuSubTrigger({
       {...props}
     >
       {children}
-      <Codicon className="ms-auto text-(--ui-text-tertiary)" name="chevron-right" size="1rem" />
+      <Codicon className="ms-auto text-(--ui-text-tertiary) rtl:rotate-180" name="chevron-right" size="1rem" />
     </ContextMenuPrimitive.SubTrigger>
   )
 }
