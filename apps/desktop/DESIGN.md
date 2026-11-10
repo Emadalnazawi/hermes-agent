@@ -660,6 +660,11 @@ long transcript or a busy terminal.
   portaled menus and selects. Submenu arrows and keyboard navigation mirror together.
 - Every user-facing string goes through `useI18n()` (`src/i18n/context.tsx`).
   No literals in JSX.
+- Bundled layout names come from `zones.presetNames` at shared registration and
+  refresh on locale changes; user/plugin names remain untouched. Messaging and
+  the gateway popover share `platformStatusLabel` and the messaging state catalog.
+- Arabic catalogs retain Hermes, Terminal/Terminals, Tokens, Webhooks, MCP, API,
+  GPU, RAM, SSH, JSON, GPT-Live and Nous in English; المهارات and الذاكرة stay Arabic.
 - **Update all locales together** — every catalog registered in
   `src/i18n/catalog.ts`. A string change in `en.ts` that skips the others is a
   regression (drifted punctuation, stale labels). Keep trailing-punctuation and

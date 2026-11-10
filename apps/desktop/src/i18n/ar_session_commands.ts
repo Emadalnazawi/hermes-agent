@@ -7,7 +7,7 @@ export const arSessionCommands = {
   retryNothing: 'لا يوجد ما يمكن إعادة محاولته',
   retryUnsupported: '/retry: لا يمكن إعادة محاولة الوسائط أو أجزاء المحتوى غير المعروفة',
   busy: (command: string) =>
-    `الجلسة مشغولة — ما زال Hermes يرد. أوقف الرد الحالي أولاً (زر الإيقاف، أو Ctrl+C في الطرفية)، ثم شغّل /${command}.`,
+    `الجلسة مشغولة — ما زال Hermes يرد. أوقف الرد الحالي أولاً (زر الإيقاف، أو Ctrl+C في Terminal)، ثم شغّل /${command}.`,
   busyCompressing: (command: string) =>
     `الجلسة مشغولة — يجري تنفيذ /compress؛ شغّل /${command} عند انتهائه.`,
   steerUsage: 'الاستخدام: /steer <الطلب>',

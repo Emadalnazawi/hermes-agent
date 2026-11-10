@@ -73,7 +73,7 @@ export const arSettings = {
       voiceSpeech: 'تحويل النص إلى كلام',
       advancedRuntime: 'حدود الوكيل',
       advancedTools: 'الوصول إلى الأدوات',
-      advancedTerminal: 'خلفية الطرفية',
+      advancedTerminal: 'خلفية Terminal',
       advancedOutput: 'حدود المخرجات',
       advancedDelegation: 'الوكلاء الفرعيون',
       advancedDesktop: 'سطح المكتب وبدء التشغيل',
@@ -265,7 +265,7 @@ export const arSettings = {
         },
         backgroundDone: {
           label: 'اكتملت مهمة الخلفية',
-          description: 'اكتمل أمر طرفية يعمل في الخلفية.'
+          description: 'اكتمل أمر Terminal يعمل في الخلفية.'
         }
       },
       browserPermission: {
@@ -449,7 +449,7 @@ export const arSettings = {
     fieldLabels: {
       model: 'النموذج الافتراضي',
       modelContextLength:
-        'يتجاوز نافذة السياق المكتشفة لنموذج المحادثة الرئيسي فقط (بالرموز). اتركه 0 لاستخدام القيمة المكتشفة للنموذج المحدد. لا يؤثر على النماذج المساعدة أو نماذج MoA.',
+        'يتجاوز نافذة السياق المكتشفة لنموذج المحادثة الرئيسي فقط (بوحدات Tokens). اتركه 0 لاستخدام القيمة المكتشفة للنموذج المحدد. لا يؤثر على النماذج المساعدة أو نماذج MoA.',
       fallbackProviders: 'النماذج الاحتياطية',
       toolsets: 'مجموعات الأدوات المفعلة',
       timezone: 'المنطقة الزمنية',
@@ -470,7 +470,7 @@ export const arSettings = {
       'terminal.modalImage': 'صورة Modal',
       'terminal.daytonaImage': 'صورة Daytona',
       fileReadMaxChars: 'حد قراءة الملفات',
-      'toolOutput.maxBytes': 'حد مخرجات الطرفية',
+      'toolOutput.maxBytes': 'حد مخرجات Terminal',
       'toolOutput.maxLines': 'حد صفحات الملفات',
       'toolOutput.maxLineLength': 'حد طول السطر',
       'codeExecution.mode': 'نمط تنفيذ الكود',
@@ -545,7 +545,7 @@ export const arSettings = {
       timezone: 'تستخدم عندما يحتاج Hermes إلى سياق الوقت المحلي. اتركها فارغة لاستخدام منطقة النظام.',
       'agent.imageInputMode': 'يتحكم في طريقة إرسال مرفقات الصور إلى النموذج.',
       'agent.maxTurns': 'الحد الأعلى لدورات استدعاء الأدوات قبل أن يوقف Hermes التشغيل.',
-      'terminal.cwd': 'مجلد المشروع الافتراضي لعمل الأدوات والطرفية.',
+      'terminal.cwd': 'مجلد المشروع الافتراضي لعمل الأدوات وTerminal.',
       'terminal.persistentShell': 'يحافظ على حالة الصدفة بين الأوامر عندما تدعمها الخلفية.',
       'terminal.envPassthrough': 'متغيرات البيئة التي تمرر إلى تنفيذ الأدوات.',
       'terminal.dockerImage': 'صورة الحاوية المستخدمة عند اختيار Docker كخلفية تنفيذ.',
@@ -572,7 +572,7 @@ export const arSettings = {
       'stt.enabled': 'يفعل التفريغ الصوتي المحلي أو عبر مزود.',
       'stt.elevenlabs.languageCode': 'رمز لغة ISO-639-3 اختياري. اتركه فارغاً للاكتشاف التلقائي.',
       'updates.nonInteractiveLocalChanges':
-        'عندما يحدّث Hermes نفسه من التطبيق دون موجه طرفية، احتفظ بتعديلات المصدر المحلية أو تجاهلها.'
+        'عندما يحدّث Hermes نفسه من التطبيق دون موجه Terminal، احتفظ بتعديلات المصدر المحلية أو تجاهلها.'
     },
     about: {
       updates: 'التحديثات',
@@ -938,13 +938,13 @@ export const arSettings = {
       connectAnother: 'ربط مزود آخر',
       otherProviders: 'مزودون آخرون',
       disconnect: 'قطع الاتصال',
-      disconnectInTerminal: 'قطع الاتصال (يشغّل أمر الإزالة في الطرفية)',
+      disconnectInTerminal: 'قطع الاتصال (يشغّل أمر الإزالة في Terminal)',
       removeConfirm: provider => `إزالة ${provider}؟`,
       removeExternalGeneric: provider => `${provider} يُدار عبر CLI خاص به — أزله من هناك.`,
       removeKeyManaged: provider => `${provider} مُعدّ من مفتاح API. أزله من مفاتيح API.`,
       removeTerminalConfirm: (provider, command) =>
-        `قطع اتصال ${provider}؟ هذا يشغّل "${command}" في الطرفية لمسح بيانات الاعتماد.`,
-      removeTerminalRunning: provider => `جار تشغيل قطع اتصال ${provider} في الطرفية…`,
+        `قطع اتصال ${provider}؟ هذا يشغّل "${command}" في Terminal لمسح بيانات الاعتماد.`,
+      removeTerminalRunning: provider => `جار تشغيل قطع اتصال ${provider} في Terminal…`,
       removedTitle: 'تمت إزالة الحساب',
       removedMessage: provider => `تمت إزالة ${provider}.`,
       failedRemove: provider => `تعذّرت إزالة ${provider}`,
@@ -1088,11 +1088,11 @@ export const arSettings = {
     sessionNote: 'يحدده الوضع البسيط. التغيير هنا يستمر لهذه الجلسة فقط؛ بدّل إلى المتقدم لجعله خيارك.',
     simple: {
       label: 'بسيط',
-      description: 'للتحدث مع Hermes. الشريط الجانبي والدردشة؛ بلا طرفية أو لوحات ملفات أو فروقات.'
+      description: 'للتحدث مع Hermes. الشريط الجانبي والدردشة؛ بلا Terminal أو لوحات ملفات أو فروقات.'
     },
     advanced: {
       label: 'متقدم',
-      description: 'للمطورين. الطرفية والملفات والفروقات وشريط الحالة والتخطيطات، كما أعددتها.'
+      description: 'للمطورين. Terminal والملفات والفروقات وشريط الحالة والتخطيطات، كما أعددتها.'
     }
   }
 } satisfies Pick<

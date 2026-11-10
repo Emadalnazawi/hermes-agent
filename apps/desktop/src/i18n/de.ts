@@ -4811,6 +4811,7 @@ export const deOverrides = {
     }
   },
   zones: {
+    presetNames: { 'sidebar-left': 'Seitenleiste links', 'sidebar-right': 'Seitenleiste rechts', default: 'Standard', basic: 'Einfach', focus: 'Fokus', 'terminal-deck': 'Terminalbereich', quad: 'Vier Bereiche', demo: 'Demo' },
     showTabStrip: 'Tabs anzeigen',
     hideTabStrip: 'Tabs ausblenden',
     showStripTab: title => `${title} anzeigen`,

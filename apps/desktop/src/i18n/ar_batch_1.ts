@@ -194,7 +194,7 @@ export const arBatch1 = {
         ram: 'الذاكرة RAM',
         title: 'موارد النظام',
         toggle: 'موارد النظام',
-        unifiedNote: 'ذاكرة موحّدة — يتشارك المعالج الرسومي والنظام هذه الذاكرة.'
+        unifiedNote: 'ذاكرة موحّدة — يتشارك GPU والنظام هذه الذاكرة.'
       },
       toggleApprovalMode: 'الموافقات',
       toggleBackendVersion: 'إصدار الخادم',

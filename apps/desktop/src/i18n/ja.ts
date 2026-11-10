@@ -3225,6 +3225,7 @@ export const jaOverrides = {
   },
 
   zones: {
+    presetNames: { 'sidebar-left': 'サイドバー左', 'sidebar-right': 'サイドバー右', default: '標準', basic: '基本', focus: '集中', 'terminal-deck': 'ターミナルデッキ', quad: '4分割', demo: 'デモ' },
     showTabStrip: 'タブを表示',
     hideTabStrip: 'タブを隠す',
     showStripTab: title => `${title} を表示`,
