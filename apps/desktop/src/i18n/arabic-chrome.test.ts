@@ -45,7 +45,11 @@ describe('Arabic shared chrome copy', () => {
     expect(ar.rightSidebar.terminal).toBe('Terminal')
     expect(ar.commandCenter.statTokens).toBe('Tokens')
     expect(ar.commandCenter.dailyTokens).toContain('Tokens')
-    const strings = (node: unknown): string[] => typeof node === 'string' ? [node] : node && typeof node === 'object' ? Object.values(node).flatMap(strings) : []
-    expect(strings(ar).filter(text => /طرفية|طرفيت|هيرميز|توكن/.test(text.replaceAll('الحالات الطرفية', '')))).toEqual([])
+    // Raw catalogs also cover interpolation functions and overridden legacy entries.
+    const catalogs = import.meta.glob('./ar*.ts', { eager: true, query: '?raw', import: 'default' })
+    const forbidden = /طرفية|طرفيت|هيرميز|هيرمز|توكن|توكين|(?:ويب|ويو)[ -]?هوك|ويبهوك|جي بي تي|إم سي بي|إس إس إتش|جيسون|نوس|ذاكرة الوصول العشوائي|وحدة معالجة الرسوم|مليون رمز|رموز البوابة/
+    expect(Object.entries(catalogs)
+      .filter(([path]) => !path.endsWith('.test.ts'))
+      .flatMap(([path, text]) => String(text).split('\n').filter(line => forbidden.test(line)).map(line => ({ path, line })))).toEqual([])
   })
 })

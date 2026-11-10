@@ -348,7 +348,7 @@ export const arBoot = {
     freeTier: 'الطبقة المجانية',
     pro: 'مدفوع',
     free: 'مجاني',
-    price: (input, output) => `${input} إدخال / ${output} إخراج لكل مليون رمز`,
+    price: (input, output) => `${input} إدخال / ${output} إخراج لكل مليون Tokens`,
     change: 'تغيير',
     startChatting: 'ابدأ',
     docs: provider => `وثائق ${provider}`
