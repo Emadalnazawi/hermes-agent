@@ -1,7 +1,7 @@
 /* Grok-derived treatment, deliberately limited to the Arabic skins. Keep the
    defaults zero-specificity so a skin's existing customCSS :root block can
    drive these dedicated tokens without changing dialog/shared surface paint.
-   ThemeProvider normalizes hermes-arabi-light to hermes-arabi + mode=light. */
+   ThemeProvider keeps the skin name and publishes the rendered mode separately. */
 :where(:root:is([data-hermes-theme='hermes-arabi'], [data-hermes-theme='hermes-arabi-light'])) {
   --dt-chat-user-background: #f5f5f52e;
   --dt-chat-user-foreground: #f5f5f5;
@@ -31,6 +31,7 @@
   --dt-chat-user-background: #1c1c1c;
   --dt-chat-user-foreground: #ffffff;
   --dt-chat-assistant-background: #1c1c1c0f;
+  --dt-chat-assistant-foreground: #1c1c1c;
   --dt-chat-composer-background: #ffffff;
   --dt-chat-composer-foreground: #1c1c1c;
   --dt-chat-composer-border: #1c1c1c1f;

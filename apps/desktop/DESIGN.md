@@ -390,6 +390,9 @@ headings and isolated-LTR code; do not flatten descendant weights.
 
 `src/themes/hermes-arabi.css` owns the opt-in treatment for `hermes-arabi`
 and `hermes-arabi-light` (including ThemeProvider's normalized name + mode).
+The dark Arabic skin honors Light appearance using the registered light sibling,
+or the existing synthesized light palette until that sibling is available.
+Explicit `hermes-arabi-light` stays a light single-palette skin in either mode.
 Dedicated `--dt-chat-{user,assistant}-{background,foreground}` tokens keep
 message colors separate from `--ui-chat-bubble-background`, which dialogs use.
 Shared geometry: `--dt-chat-bubble-{radius,padding-block,padding-inline,max-width}`.
