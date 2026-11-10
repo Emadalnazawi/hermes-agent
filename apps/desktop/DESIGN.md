@@ -266,6 +266,13 @@ directions, checks the inline-end close slot and interactive-element rectangle
 intersections, and writes measurements to the configured temporary directory.
 It uses Chromium's CLI, not CDP, and does not touch the running app.
 
+`OverlaySplitLayout`/`OverlayMain` must shrink within their grid track in either
+direction. `SettingsContent` owns bounded prose wrapping (`overflow-wrap:
+anywhere`), including unbroken model/provider IDs and URLs. Never hide prose
+overflow with a per-page clip or physical margin correction. The geometry
+fixture also asserts prose stays in its column without horizontal overflow,
+and both provider/model controls retain a measurable, contained hit target.
+
 ## Badges — one component
 
 `src/components/ui/badge.tsx`. Variants: `default` (tinted primary), `muted`,

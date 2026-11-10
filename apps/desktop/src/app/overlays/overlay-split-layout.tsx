@@ -55,7 +55,7 @@ export function OverlaySplitLayout({ children, className }: OverlaySplitLayoutPr
         // Narrow: one column, and pin rows to [nav-bar auto | main 1fr] — without
         // an explicit template the grid's default align-content:stretch splits the
         // height evenly across the two rows, shoving the content to mid-screen.
-        'grid h-full min-h-0 flex-1 grid-cols-[13rem_minmax(0,1fr)] overflow-hidden bg-transparent max-[47.5rem]:grid-cols-1 max-[47.5rem]:grid-rows-[auto_minmax(0,1fr)]',
+        'grid h-full min-h-0 min-w-0 flex-1 grid-cols-[13rem_minmax(0,1fr)] overflow-hidden bg-transparent max-[47.5rem]:grid-cols-1 max-[47.5rem]:grid-rows-[auto_minmax(0,1fr)]',
         className
       )}
     >
@@ -85,7 +85,7 @@ export function OverlayMain({ children, className }: OverlayMainProps) {
   return (
     <main
       className={cn(
-        'mx-auto flex min-h-0 w-full flex-1 flex-col overflow-hidden bg-transparent pb-2 pt-2 px-[clamp(0.8333rem,2.6667vw,2.6667rem)]',
+        'mx-auto flex min-h-0 min-w-0 w-full flex-1 flex-col overflow-hidden bg-transparent pb-2 pt-2 px-[clamp(0.8333rem,2.6667vw,2.6667rem)]',
         PAGE_MAX_W,
         className
       )}
