@@ -40,9 +40,14 @@ const ARROWS = new Map<string, (columns: number | undefined) => ArrowMove | null
   ['ArrowUp', columns => ({ delta: -(columns ?? 1), wrap: columns === undefined })]
 ])
 
-/** Cursor move for an arrow key; left/right only move in a grid. */
-export function arrowMove(key: string, columns: number | undefined): ArrowMove | null {
-  return ARROWS.get(key)?.(columns) ?? null
+/** Cursor move for an arrow key; left/right only move in a grid.
+ *
+ * `rtl` mirrors the horizontal pair: a right-to-left grid puts the next
+ * column visually to the left, while the row-major index still counts up. */
+export function arrowMove(key: string, columns: number | undefined, rtl = false): ArrowMove | null {
+  const move = ARROWS.get(key)?.(columns) ?? null
+
+  return move && rtl && (key === 'ArrowLeft' || key === 'ArrowRight') ? { ...move, delta: -move.delta } : move
 }
 
 /** Row index for a 1-9 / a-z shortcut key, or null. */

@@ -5,6 +5,19 @@ import { $boardSlug, $pinnedBoards, kanbanConnectionScope, movePinnedBoard } fro
 import type { BoardMeta } from './types'
 import { useKanban } from './ui'
 
+/** -1 in RTL, +1 in LTR. Plugins may import only the plugin SDK, so this
+ *  mirrors the app's writing-direction read locally instead of reaching into
+ *  `@/lib`; the computed value lets an explicit CSS direction win over `dir`. */
+function inlineSign(element: Element): 1 | -1 {
+  const computed = getComputedStyle(element).direction
+
+  if (computed === 'rtl' || computed === 'ltr') {
+    return computed === 'rtl' ? -1 : 1
+  }
+
+  return element.closest('[dir="rtl"]') ? -1 : 1
+}
+
 /** One-click tabs for pinned boards, beside the switcher. Drag or Alt+Left/Right
  *  reorders; selection only changes on click. Pins for boards that no longer
  *  exist stay stored but hidden, so a board that comes back keeps its slot. */
@@ -68,7 +81,10 @@ export function PinnedBoardTabs({
               endDrag()
             }}
             onKeyDown={event => {
-              const step = event.key === 'ArrowLeft' ? -1 : event.key === 'ArrowRight' ? 1 : 0
+              // Pinned order is DOM order; in RTL that runs right-to-left, so the
+              // visual left/right keys walk the list the other way round.
+              const physical = event.key === 'ArrowLeft' ? -1 : event.key === 'ArrowRight' ? 1 : 0
+              const step = physical * inlineSign(event.currentTarget)
               const target = visible[index + step]
 
               if (event.altKey && step && target) {

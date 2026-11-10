@@ -44,6 +44,7 @@ afterEach(() => {
   disposeLocales()
   setConnection(null)
   $boardSlug.set('')
+  window.document.documentElement.removeAttribute('dir')
 })
 
 const mount = () =>
@@ -121,6 +122,21 @@ describe('board switcher', () => {
     bindPersistence()
     mount()
     expect((await screen.findByRole('group', { name: 'Pinned boards' })).textContent).toBe('Research')
+  })
+
+  it('reorders a pinned board toward the visual direction in an RTL layout', async () => {
+    window.document.documentElement.setAttribute('dir', 'rtl')
+    bindPersistence()
+    mount()
+
+    await chooseFromMenu('Pin board')
+    await chooseFromMenu(/^Research/)
+    await chooseFromMenu('Pin board')
+    expect(tabNames()).toEqual(['Shipping', 'Research'])
+
+    // Tabs run right-to-left, so the visually-rightward key walks back a slot.
+    fireEvent.keyDown(tab('Research'), { altKey: true, key: 'ArrowRight' })
+    expect(tabNames()).toEqual(['Research', 'Shipping'])
   })
 
   it('keeps pins per connection and drops a drag that crossed a connection switch', async () => {
