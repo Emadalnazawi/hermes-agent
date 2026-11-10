@@ -269,7 +269,7 @@ function SubagentTree({ tree }: { tree: SubagentNode[] }) {
           </Fragment>
         ))}
       </p>
-      <div className="min-h-0 min-w-0 flex-1 overflow-x-hidden overflow-y-auto overscroll-contain pr-1">
+      <div className="min-h-0 min-w-0 flex-1 overflow-x-hidden overflow-y-auto overscroll-contain pe-1">
         <div className="flex min-w-0 flex-col gap-6">
           {groups.map(group => (
             <DelegationGroup group={group} key={group.id} nowMs={nowMs} />

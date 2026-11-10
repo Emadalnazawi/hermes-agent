@@ -142,7 +142,7 @@ export function QueuePanel({
           <p
             className={cn(
               'text-[0.73rem] leading-4 text-foreground/92',
-              isExpanded ? 'max-h-40 overflow-y-auto whitespace-pre-wrap pr-1' : 'line-clamp-2 break-words'
+              isExpanded ? 'max-h-40 overflow-y-auto whitespace-pre-wrap pe-1' : 'line-clamp-2 break-words'
             )}
           >
             {preview}
