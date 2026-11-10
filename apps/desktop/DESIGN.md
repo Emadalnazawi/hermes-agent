@@ -249,7 +249,8 @@ this primitive, never draw their own X or absolutely position it over content.
 `SurfaceCloseHeader` reserves an in-flow `minmax(0,1fr) auto` header row above
 the scrolling body. The last grid slot is inline-end: left in RTL, right in
 LTR. Header search/badges/actions wrap in the first slot and cannot occupy the
-close slot. `OverlayView`, `DialogContent`, `SheetContent`, onboarding and
+close slot. Even unbroken action labels are bounded and wrap in that track.
+`OverlayView`, `DialogContent`, `SheetContent`, onboarding and
 bespoke boot recovery chrome share it. Do not add per-screen close padding,
 physical corner offsets, negative margins, or floating search-pill patches.
 Compact command/session searches and toast/panel rows may use their existing

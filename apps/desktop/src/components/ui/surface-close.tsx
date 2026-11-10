@@ -16,7 +16,7 @@ export function SurfaceCloseButton({
   return (
     <Button
       aria-label={label ?? t.common.close}
-      className={cn('shrink-0 text-(--ui-text-tertiary) hover:text-foreground', className)}
+      className={cn('shrink-0 text-(--ui-text-tertiary) hover:text-foreground [-webkit-app-region:no-drag]', className)}
       data-slot="surface-close"
       size="icon-xs"
       type="button"
@@ -42,7 +42,9 @@ export function SurfaceCloseHeader({
       data-slot="surface-close-header"
       {...props}
     >
-      <div className="flex min-w-0 flex-wrap items-center gap-2 [overflow-wrap:anywhere]">{children}</div>
+      <div className="flex min-w-0 flex-wrap items-center gap-2 [overflow-wrap:anywhere] [-webkit-app-region:no-drag] [&>*]:min-w-0 [&>*]:max-w-full [&_button]:whitespace-normal">
+        {children}
+      </div>
       {close}
     </div>
   )

@@ -104,8 +104,8 @@ async function run() {
             ) : surface === 'compact' ? (
               <div className="w-72">
                 <SurfaceCloseHeader close={<SurfaceCloseButton />}>
+                  <Button>{'VeryLongActionLabel'.repeat(12)}</Button>
                   <Button>Search</Button>
-                  <Button>Another action</Button>
                 </SurfaceCloseHeader>
                 <Button>Body</Button>
               </div>

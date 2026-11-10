@@ -101,7 +101,10 @@ export function OverlayView({
           // (see the [data-glass-raised] rules in styles.css). Inert otherwise.
           data-glass-raised=""
         >
-          <SurfaceCloseHeader close={<SurfaceCloseButton aria-label={closeLabel} onClick={closeOverlay} />}>
+          <SurfaceCloseHeader
+            className="[-webkit-app-region:drag]"
+            close={<SurfaceCloseButton aria-label={closeLabel} onClick={closeOverlay} />}
+          >
             {edgeBadge}
             {headerContent}
             {titlebarActions}

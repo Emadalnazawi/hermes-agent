@@ -49,7 +49,7 @@ test('shared dismiss slots do not intersect interactive content in RTL or LTR', 
     base: path.join(desktop, 'src'),
     onDependency() {}
   })
-  const css = compiler.build([...new Set(text.match(/[^\s"'`<>]+/g))])
+  const css = compiler.build([...new Set(text.match(/[^\s"'`]+/g))])
   const fixture = path.join(scratch, 'fixture.html')
   await writeFile(
     fixture,
