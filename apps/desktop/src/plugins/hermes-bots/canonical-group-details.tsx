@@ -1,4 +1,4 @@
-import { atom, Button, Codicon, Tip } from '@hermes/plugin-sdk'
+import { atom, Button, SurfaceCloseButton, Tip } from '@hermes/plugin-sdk'
 import { type ReactNode, useLayoutEffect, useRef } from 'react'
 
 import { canonicalMemberName } from './canonical-group-activity'
@@ -182,7 +182,7 @@ export function CanonicalGroupDetails({ avatarFor, children, labels, onClose, ro
   return <aside aria-label={labels.groupDetails} className="flex w-72 shrink-0 flex-col gap-4 overflow-y-auto border-l border-(--ui-stroke-tertiary) px-4 py-3">
     <div className="flex items-center justify-between">
       <span className="text-[0.6875rem] font-semibold uppercase tracking-wider text-(--ui-text-tertiary)">{labels.groupDetails}</span>
-      <Button aria-label={labels.close} onClick={onClose} size="icon-xs" variant="ghost"><Codicon name="close" /></Button>
+      <SurfaceCloseButton aria-label={labels.close} onClick={onClose} />
     </div>
     <div className="flex flex-col items-center gap-2 text-center">
       <AvatarStack avatars={room.members.map(member => ({ key: member.member_id, node: avatarFor(faceName(member), 40) }))} max={4} />

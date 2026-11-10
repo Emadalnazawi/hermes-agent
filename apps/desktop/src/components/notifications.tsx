@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button'
 import { CardStack, type CardStackAction } from '@/components/ui/card-stack'
 import { Codicon } from '@/components/ui/codicon'
 import { CopyButton } from '@/components/ui/copy-button'
+import { SurfaceCloseButton } from '@/components/ui/surface-close'
 import { useI18n } from '@/i18n'
 import { triggerHaptic } from '@/lib/haptics'
 import { AlertCircle, AlertTriangle, CheckCircle2, type IconComponent, Info } from '@/lib/icons'
@@ -334,19 +335,14 @@ function NotificationItem({ notification, stack }: { notification: AppNotificati
           )}
         </AlertDescription>
       </div>
-      <Button
+      <SurfaceCloseButton
         aria-label={copy.dismiss}
-        className="col-start-3 -me-1 text-muted-foreground"
+        className="col-start-3 self-start"
         disabled={stack.busy || !stack.active}
         onClick={() => {
           void stack.depart(() => userDismiss(notification.id))
         }}
-        size="icon-xs"
-        type="button"
-        variant="ghost"
-      >
-        <Codicon name="close" size="0.875rem" />
-      </Button>
+      />
     </Alert>
   )
 }

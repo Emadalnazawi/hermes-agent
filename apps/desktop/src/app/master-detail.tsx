@@ -13,6 +13,7 @@ import { Button } from '@/components/ui/button'
 import { Codicon } from '@/components/ui/codicon'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { RowButton } from '@/components/ui/row-button'
+import { SurfaceCloseButton } from '@/components/ui/surface-close'
 import { Switch } from '@/components/ui/switch'
 import { Tip } from '@/components/ui/tooltip'
 import { useI18n } from '@/i18n'
@@ -289,7 +290,7 @@ export function DetailPane({
       </div>
       <header className="flex h-9 shrink-0 items-center gap-2 px-3">
         <span className="min-w-0 truncate text-xs font-medium text-foreground">{title}</span>
-        <div className="ml-auto flex shrink-0 items-center gap-1.5">
+        <div className="ms-auto flex shrink-0 items-center gap-1.5">
           {actions}
           <Tip label={collapsed ? t.common.expand : t.common.collapse}>
             <Button
@@ -304,9 +305,7 @@ export function DetailPane({
             </Button>
           </Tip>
           {onClose && (
-            <Button aria-label={t.common.close} className={ICON_BUTTON} onClick={onClose} size="icon" variant="ghost">
-              <Codicon name="close" size="0.8125rem" />
-            </Button>
+            <SurfaceCloseButton onClick={onClose} />
           )}
         </div>
       </header>

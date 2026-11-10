@@ -5,7 +5,7 @@ import { type ReactNode, useEffect, useRef, useState } from 'react'
 import { Dialog, DialogContent } from '@/components/ui/dialog'
 import { Tip } from '@/components/ui/tooltip'
 import { useI18n } from '@/i18n'
-import { Check, Copy, Maximize, RefreshCw, X, ZoomIn, ZoomOut } from '@/lib/icons'
+import { Check, Copy, Maximize, RefreshCw, ZoomIn, ZoomOut } from '@/lib/icons'
 import { cn } from '@/lib/utils'
 
 import { FIT_MIN_SCALE, useZoomPan } from './use-zoom-pan'
@@ -89,7 +89,6 @@ function ZoomPanViewer({
       <DialogContent
         bodyClassName="flex min-h-0 flex-1 flex-col gap-0 overflow-hidden p-0"
         className="h-[85vh] w-[90vw] max-w-[90vw]"
-        showCloseButton={false}
       >
         <div
           className={cn(
@@ -105,20 +104,18 @@ function ZoomPanViewer({
             </div>
           </div>
         </div>
-        <Toolbar onClose={() => onOpenChange(false)} onCopy={onCopy} reset={reset} zoomIn={zoomIn} zoomOut={zoomOut} />
+        <Toolbar onCopy={onCopy} reset={reset} zoomIn={zoomIn} zoomOut={zoomOut} />
       </DialogContent>
     </Dialog>
   )
 }
 
 function Toolbar({
-  onClose,
   onCopy,
   reset,
   zoomIn,
   zoomOut
 }: {
-  onClose: () => void
   onCopy?: () => Promise<void> | void
   reset: () => void
   zoomIn: () => void
@@ -180,10 +177,6 @@ function Toolbar({
           </ToolbarButton>
         </>
       )}
-      <Divider />
-      <ToolbarButton label={t.common.close} onClick={onClose}>
-        <X className="size-4" />
-      </ToolbarButton>
     </div>
   )
 }

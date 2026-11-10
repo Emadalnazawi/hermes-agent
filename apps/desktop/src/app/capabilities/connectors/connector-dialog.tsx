@@ -4,11 +4,10 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Codicon } from '@/components/ui/codicon'
 import { ConnectorLogo } from '@/components/ui/connector-logo'
-import { Dialog, DialogClose, DialogContent, DialogDescription, DialogTitle } from '@/components/ui/dialog'
+import { Dialog, DialogContent, DialogDescription, DialogTitle } from '@/components/ui/dialog'
 import { Switch } from '@/components/ui/switch'
 import { useI18n } from '@/i18n'
 import { connectorIconUrl } from '@/lib/connector-tools'
-import { X } from '@/lib/icons'
 import { cn } from '@/lib/utils'
 
 import { CatalogMark } from './catalog-mark'
@@ -102,7 +101,7 @@ export function ConnectorDialog({
           event.preventDefault()
           titleRef.current?.focus()
         }}
-        showCloseButton={false}
+
       >
         <Header card={card} titleRef={titleRef} {...rest} />
 
@@ -217,11 +216,7 @@ function HeaderActions({
 
       {menu}
 
-      <DialogClose asChild>
-        <Button aria-label={t.common.close} size="icon-xs" variant="ghost">
-          <X className="size-3" />
-        </Button>
-      </DialogClose>
+
     </div>
   )
 }

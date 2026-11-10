@@ -230,13 +230,43 @@ Notes:
 - SVGs inherit `size-3.5` (`size-3` at `xs`). Don't re-set icon size.
 - Polymorph with `asChild` when the button must render as a link/Slot.
 
-## Badges — one component
+## Shared surface chrome
 
 Shared toast content uses logical padding/margins; its explicitly named
 `bottom-right` placement remains physical. Split buttons join at logical edges
 and reuse the localized alternate-action label, without per-screen RTL overrides.
-Select indicators and dialog close buttons already use logical end positioning;
+Select indicators use logical end positioning;
 popover arrow rotations and centered dialog transforms remain physical geometry.
+
+### Surface dismissal — reserved inline-end slot
+
+`SurfaceCloseButton` (`src/components/ui/surface-close.tsx`) is the single
+surface-dismiss glyph and hit target (24px, localized accessible label, no tip).
+This is separate from the tab-specific `PaneTab` contract. Overlay, dialog,
+sheet, drawer, dismissible popover, toast and panel-header closes must compose
+this primitive, never draw their own X or absolutely position it over content.
+
+`SurfaceCloseHeader` reserves an in-flow `minmax(0,1fr) auto` header row above
+the scrolling body. The last grid slot is inline-end: left in RTL, right in
+LTR. Header search/badges/actions wrap in the first slot and cannot occupy the
+close slot. `OverlayView`, `DialogContent`, `SheetContent`, onboarding and
+bespoke boot recovery chrome share it. Do not add per-screen close padding,
+physical corner offsets, negative margins, or floating search-pill patches.
+Compact command/session searches and toast/panel rows may use their existing
+in-flow trailing flex/grid slot, with a shrinkable content track and a
+non-shrinking close target. Radix still owns focus, Escape and dismissal.
+Dialogs without a dismiss X (mandatory prompts/explicit cancel flows) retain
+that behavior. `showCloseButton={false}` is not a positioning workaround.
+
+Geometry check: from `apps/desktop`, run
+`pnpm exec node --test scripts/overlay-geometry.mjs` (installed Playwright
+Chromium, or `GEOMETRY_BROWSER` pointing to a Chromium executable). It renders
+production primitives and compiled Desktop CSS at 400/720/960/1440px in both
+directions, checks the inline-end close slot and interactive-element rectangle
+intersections, and writes measurements to the configured temporary directory.
+It uses Chromium's CLI, not CDP, and does not touch the running app.
+
+## Badges — one component
 
 `src/components/ui/badge.tsx`. Variants: `default` (tinted primary), `muted`,
 `warn`, `destructive`, `outline`, `solid` (primary fill — icon-corner counts).

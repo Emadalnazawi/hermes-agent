@@ -51,7 +51,7 @@ function CommandInput({ className, right, ...props }: CommandInputProps) {
       >
         <CommandPrimitive.Input
           className={cn(
-            'h-4 w-full bg-transparent text-xs leading-none text-foreground focus:outline-hidden forced-colors:focus:-outline-offset-2 placeholder:text-(--ui-text-tertiary) disabled:cursor-not-allowed disabled:opacity-50',
+            'h-4 min-w-0 flex-1 bg-transparent text-xs leading-none text-foreground focus:outline-hidden forced-colors:focus:-outline-offset-2 placeholder:text-(--ui-text-tertiary) disabled:cursor-not-allowed disabled:opacity-50',
             className
           )}
           data-slot="command-input"
@@ -71,7 +71,7 @@ function CommandInput({ className, right, ...props }: CommandInputProps) {
       <SearchIcon className="size-4 shrink-0 text-muted-foreground" />
       <CommandPrimitive.Input
         className={cn(
-          'flex h-10 w-full rounded-md bg-transparent py-3 text-sm focus:outline-hidden forced-colors:focus:-outline-offset-2 placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50',
+          'flex h-10 min-w-0 flex-1 rounded-md bg-transparent py-3 text-sm focus:outline-hidden forced-colors:focus:-outline-offset-2 placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50',
           className
         )}
         data-slot="command-input"

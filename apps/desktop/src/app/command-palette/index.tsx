@@ -19,6 +19,7 @@ import { codiconIcon } from '@/components/ui/codicon'
 import { Command, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command'
 import { HighlightMatches } from '@/components/ui/highlight-matches'
 import { KbdCombo } from '@/components/ui/kbd'
+import { SurfaceCloseButton } from '@/components/ui/surface-close'
 import { getHermesConfigRecord, listAllProfileSessions } from '@/hermes'
 import { useMediaQuery } from '@/hooks/use-media-query'
 import { useI18n } from '@/i18n'
@@ -1639,7 +1640,7 @@ function CommandPaletteBody({ onExited }: { onExited: () => void }) {
             onValueChange={setSearch}
             placeholder={placeholder}
             ref={inputRef}
-            right={page === 'pets' ? <PetInlineToggle /> : undefined}
+            right={<>{page === 'pets' ? <PetInlineToggle /> : null}<DialogPrimitive.Close asChild><SurfaceCloseButton /></DialogPrimitive.Close></>}
             value={search}
           />
           <CommandList className="dt-portal-scrollbar max-h-[min(20rem,56vh)]">

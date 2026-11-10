@@ -4074,9 +4074,6 @@ html[data-hermes-desktop-host='browser'] [data-slot='sidebar-container'] {
   padding-top: 1px;
 }
 
-.aui-error-card[data-severity='degraded'] .aui-error-card-text {
-  padding-right: 20px;
-}
 
 .aui-error-card-title {
   font-weight: 700;
@@ -4118,14 +4115,6 @@ html[data-hermes-desktop-host='browser'] [data-slot='sidebar-container'] {
   color: var(--err-ink);
 }
 
-.aui-error-card-close {
-  position: absolute;
-  top: 9px;
-  right: 10px;
-  width: 16px;
-  height: 16px;
-  cursor: pointer;
-}
 
 /* Action row and details hang under the title, not the icon (icon 20 + gap 6). */
 .aui-error-card-row {
@@ -4133,7 +4122,7 @@ html[data-hermes-desktop-host='browser'] [data-slot='sidebar-container'] {
 }
 
 .aui-error-card-toggle:focus-visible,
-.aui-error-card-close:focus-visible,
+
 .aui-error-details-link:focus-visible {
   outline: none;
   box-shadow: 0 0 0 1px color-mix(in srgb, var(--err-ink) 30%, transparent);

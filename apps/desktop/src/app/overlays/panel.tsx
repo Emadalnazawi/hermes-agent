@@ -9,7 +9,7 @@ import { Tip } from '@/components/ui/tooltip'
 import { translateNow } from '@/i18n'
 import { cn } from '@/lib/utils'
 
-import { OVERLAY_TOP_CLEARANCE, OverlayView } from './overlay-view'
+import { OverlayView } from './overlay-view'
 
 // Overlay "panel" primitive — the centered, capped card + framed chrome lifted
 // straight from the trace / agents overlay so every non-settings overlay (cron,
@@ -47,9 +47,7 @@ export function Panel({
   return (
     <OverlayView
       closeLabel={closeLabel}
-      // Header title rides up next to the floating close button — see
-      // OVERLAY_TOP_CLEARANCE, the shared clearance every overlay column uses.
-      contentClassName={cn('flex h-full min-h-0 flex-col px-4 pb-4 sm:px-5', OVERLAY_TOP_CLEARANCE, contentClassName)}
+      contentClassName={cn('flex min-h-0 flex-col px-4 pb-4 sm:px-5', contentClassName)}
       onClose={onClose}
       rootClassName={cn('flex h-full w-full flex-col', className)}
     >
@@ -67,11 +65,7 @@ interface PanelHeaderProps {
 
 export function PanelHeader({ actions, subtitle, title }: PanelHeaderProps) {
   return (
-    // The overlay's close (X) is absolutely positioned at right-3 and costs no
-    // layout space, so header actions would otherwise slide right up against it.
-    // Reserve clearance (button footprint from the card edge + a small gap) on
-    // the right whenever actions are present.
-    <header className={cn('mb-3 flex shrink-0 items-start justify-between gap-3', actions ? 'pe-8' : undefined)}>
+    <header className="mb-3 flex shrink-0 flex-wrap items-start justify-between gap-3">
       <div className="min-w-0">
         <h2 className="text-sm font-semibold text-foreground">{title}</h2>
         {subtitle ? <p className="truncate text-xs text-muted-foreground/80">{subtitle}</p> : null}
