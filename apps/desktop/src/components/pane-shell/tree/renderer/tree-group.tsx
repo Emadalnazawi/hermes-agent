@@ -885,7 +885,7 @@ export function TreeGroup({
                       style={{ cursor: 'grab' }}
                     >
                       {chrome.tabLead ? (
-                        <span className="ml-2 -mr-1 flex shrink-0 items-center">
+                        <span className="flex shrink-0 items-center">
                           <TabKeyHint groupId={node.id} slot={index + 1}>
                             {chrome.tabLead()}
                           </TabKeyHint>
