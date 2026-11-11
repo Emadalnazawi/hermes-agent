@@ -36,6 +36,9 @@ const electronNative: TestProjectConfiguration = {
     // modules that should be provable without booting Electron. Playwright
     // ignores the same pattern so they run in exactly one runner.
     include: ['electron/**/*.test.ts', 'scripts/**.test.{ts,mjs}', 'e2e/**/*.unit.test.ts'],
+    // Native geometry uses node:test and needs a live stylesheet server; run
+    // it explicitly with `node --test scripts/pane-tab-layout.test.mjs`.
+    exclude: ['scripts/pane-tab-layout.test.mjs'],
     // Tests here shell out to real interpreters (python3, pwsh) over a 40+
     // case corpus; pwsh alone takes several seconds to start on a loaded CI
     // runner, so vitest's 5s default timed the Windows marker judge out.

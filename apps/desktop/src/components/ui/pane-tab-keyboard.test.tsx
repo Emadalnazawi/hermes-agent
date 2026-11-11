@@ -15,11 +15,13 @@ function TabList({
   initialIds = ['one', 'two', 'three'],
   vertical = false,
   wrapped = false,
+  dir,
   onKeyDown
 }: {
   initialIds?: string[]
   vertical?: boolean
   wrapped?: boolean
+  dir?: 'ltr' | 'rtl'
   onKeyDown?: KeyboardEventHandler<HTMLDivElement>
 }) {
   const [ids, setIds] = useState(initialIds)
@@ -29,7 +31,7 @@ function TabList({
   const tabProps = usePaneTabKeyboard(ids, active, ref)
 
   return (
-    <div ref={ref}>
+    <div dir={dir} ref={ref}>
       <div
         aria-label="Sessions"
         aria-orientation={collapsed ? 'vertical' : 'horizontal'}
@@ -126,6 +128,15 @@ describe('pane tab keyboard navigation', () => {
     expect(fireEvent.keyDown(tab('three'), { key: 'Tab', shiftKey: true })).toBe(true)
     expect(fireEvent.keyDown(tab('three'), { key: 'ArrowLeft', metaKey: true })).toBe(true)
     expect(globalThis.document.activeElement).toBe(tab('three'))
+  })
+
+  it('mirrors horizontal arrow keys in RTL tab strips', () => {
+    render(<TabList dir="rtl" />)
+    focus(tab('one'))
+    fireEvent.keyDown(tab('one'), { key: 'ArrowLeft' })
+    expect(globalThis.document.activeElement).toBe(tab('two'))
+    fireEvent.keyDown(tab('two'), { key: 'ArrowRight' })
+    expect(globalThis.document.activeElement).toBe(tab('one'))
   })
 
   it('uses vertical arrows and preserves the activated tab through a restore remount', () => {

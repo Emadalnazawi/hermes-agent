@@ -3470,6 +3470,7 @@ export const ruOverrides = {
     }
   },
   zones: {
+    presetNames: { 'sidebar-left': 'Панель слева', 'sidebar-right': 'Панель справа', default: 'По умолчанию', basic: 'Базовый', focus: 'Фокус', 'terminal-deck': 'Панель терминала', quad: 'Четыре зоны', demo: 'Демо' },
     showTabStrip: 'Показать вкладки',
     hideTabStrip: 'Скрыть вкладки',
     showStripTab: title => `Показать ${title}`,

@@ -212,9 +212,9 @@ Exit fades over 100ms and moves 0.125rem toward the anchor; reduced motion
 disables the exit animation. `OverflowTip` stays on its own longer delay
 (list titles must not trail while scanning). Bubbles use a 0.25rem radius.
 
-**Tooltip placement.** Choose intent through `placement`: `control` above (default), `toolbar` below, `row` to the right, and `left-rail` / `right-rail` inward. Explicit `side` and `align` override the preference. Radix flips and shifts for collisions, keeps the arrow attached, and hides detached triggers. Controls and toolbars use their owning pane as a boundary; row descriptions and rails may extend into the window. Use `boundary="viewport"` for an intentional escape. Short labels size to content; descriptions wrap within 24rem and the available space, in one rounded bubble.
+**Tooltip placement.** Choose intent through `placement`: `control` above (default), `toolbar` below, `row` at inline-end (left in RTL), and physical `left-rail` / `right-rail` inward. Explicit `side` and `align` override the preference. Radix flips and shifts for collisions, keeps the arrow attached, and hides detached triggers. Controls and toolbars use their owning pane as a boundary; row descriptions and rails may extend into the window. Use `boundary="viewport"` for an intentional escape. Short labels size to content; descriptions wrap within 24rem and the available space, in one rounded bubble.
 
-**Slash descriptions.** Keep autocomplete rows single-line and ellipsized, but reveal the complete catalog description to the right of the hovered row. Use the shared bounded tooltip, collision padding, and word wrapping; it must not intercept row selection. Catalog and completion producers preserve the full author-supplied description.
+**Slash descriptions.** Keep autocomplete rows single-line and ellipsized, but reveal the complete catalog description at inline-end of the hovered row. Use the shared bounded tooltip, collision padding, and word wrapping; it must not intercept row selection. Catalog and completion producers preserve the full author-supplied description.
 
 **Model search.** Model filters and their highlighted labels treat hyphens, dots, underscores and spaces equivalently. Preserve original label spelling inside marks. The shared highlighter remains literal for other surfaces such as the command palette; model callers explicitly opt in. Model identifier search does not use dictionary spellcheck.
 
@@ -229,6 +229,50 @@ Notes:
   fixed heights). Only icon buttons carry the shared 4px radius.
 - SVGs inherit `size-3.5` (`size-3` at `xs`). Don't re-set icon size.
 - Polymorph with `asChild` when the button must render as a link/Slot.
+
+## Shared surface chrome
+
+Shared toast content uses logical padding/margins; its explicitly named
+`bottom-right` placement remains physical. Split buttons join at logical edges
+and reuse the localized alternate-action label, without per-screen RTL overrides.
+Select indicators use logical end positioning;
+popover arrow rotations and centered dialog transforms remain physical geometry.
+
+### Surface dismissal — reserved inline-end slot
+
+`SurfaceCloseButton` (`src/components/ui/surface-close.tsx`) is the single
+surface-dismiss glyph and hit target (24px, localized accessible label, no tip).
+This is separate from the tab-specific `PaneTab` contract. Overlay, dialog,
+sheet, drawer, dismissible popover, toast and panel-header closes must compose
+this primitive, never draw their own X or absolutely position it over content.
+
+`SurfaceCloseHeader` reserves an in-flow `minmax(0,1fr) auto` header row above
+the scrolling body. The last grid slot is inline-end: left in RTL, right in
+LTR. Header search/badges/actions wrap in the first slot and cannot occupy the
+close slot. Even unbroken action labels are bounded and wrap in that track.
+`OverlayView`, `DialogContent`, `SheetContent`, onboarding and
+bespoke boot recovery chrome share it. Do not add per-screen close padding,
+physical corner offsets, negative margins, or floating search-pill patches.
+Compact command/session searches and toast/panel rows may use their existing
+in-flow trailing flex/grid slot, with a shrinkable content track and a
+non-shrinking close target. Radix still owns focus, Escape and dismissal.
+Dialogs without a dismiss X (mandatory prompts/explicit cancel flows) retain
+that behavior. `showCloseButton={false}` is not a positioning workaround.
+
+Geometry check: from `apps/desktop`, run
+`pnpm exec node --test scripts/overlay-geometry.mjs` (installed Playwright
+Chromium, or `GEOMETRY_BROWSER` pointing to a Chromium executable). It renders
+production primitives and compiled Desktop CSS at 400/720/960/1440px in both
+directions, checks the inline-end close slot and interactive-element rectangle
+intersections, and writes measurements to the configured temporary directory.
+It uses Chromium's CLI, not CDP, and does not touch the running app.
+
+`OverlaySplitLayout`/`OverlayMain` must shrink within their grid track in either
+direction. `SettingsContent` owns bounded prose wrapping (`overflow-wrap:
+anywhere`), including unbroken model/provider IDs and URLs. Never hide prose
+overflow with a per-page clip or physical margin correction. The geometry
+fixture also asserts prose stays in its column without horizontal overflow,
+and both provider/model controls retain a measurable, contained hit target.
 
 ## Badges — one component
 
@@ -262,6 +306,8 @@ blurred backdrop.
   (color mode, tool-call display, usage period). Replaces radio piles and
   pill rows.
 - **`Switch`** (`size="xs"`) — bare, with `aria-label`. No bordered text wrapper.
+  The thumb moves toward inline-end when checked in both LTR and RTL, staying
+  inside its track. Logical margin owns its travel; do not add per-screen transforms.
 - **`FanMenu`** (`src/components/ui/fan-menu.tsx`) — one hub control that
   fans sibling toggles out on hover: `direction` `vertical` | `horizontal`
   (split around the hub) | `arc`. Discs are `Button` `floating` off /
@@ -332,11 +378,32 @@ Holding Cmd (Ctrl off macOS) reveals small slot numbers over the target strip's
 status dots after 400ms, without changing tab widths. Hints follow the same
 binding and hovered/focused-zone resolver as the number shortcuts.
 
-Tab close buttons fade the label with a content mask, not a painted gradient.
-The tab reads its surface token directly so glass tint is painted only once.
-Close glyphs keep a 24px hit area, including session tabs wrapped in context menus.
-`PaneTab` owns its `data-slot` marker after forwarded props so composition cannot
-disable that width or the label mask.
+`PaneTab` owns every horizontal pane tab's close control: a fixed 24px hit target,
+non-shrinking and in normal flex flow at inline-start (right in Arabic, left in
+English), with 4px logical margins. Its slot stays reserved when hidden; hover
+and focus change opacity only, never geometry. No absolute close overlay or title
+mask, and no per-screen close positioning. Icons, badges and dirty indicators
+occupy separate flow slots; title content alone shrinks and clips. The tab reads
+its surface token directly so glass tint is painted only once. `PaneTab` owns its
+`data-slot` marker after forwarded props, including context-menu composition.
+`PaneTabStrip` guarantees 4px gaps between tabs and in-list controls (including
+new-tab), plus 4px inline edge clearance from pinned menus, split/overflow/scroll
+controls and external drag handles. Pinned controls never shrink into the list;
+crowded tabs scroll within the list instead. Consumers must not negate these gaps.
+`PaneTabLabel` preserves title case and isolates each title with `bdi dir="auto"`;
+all tabs ellipsize at the title's inline-end, including closeable tabs. English
+titles therefore keep their beginning in an Arabic shell, clear of the close slot.
+
+Consumer audit: `tree/renderer/tree-group.tsx` owns the horizontal strip for
+workspace/session tiles, previews, terminal/log bottom panels and contributed
+plugin panes, plus the vertical collapsed rail and fixed page header.
+`tree/renderer/narrow-overlays.tsx` is the second `PaneTabStrip` consumer (fixed,
+non-closeable overlay tabs). Both use `PaneTab`/`PaneTabLabel`; there is no other
+tab-close glyph implementation. The terminal's icon-only `terminal/rail.tsx`,
+`CompactTabPicker` and UI `TabsTrigger` have no tab-close glyph; they retain their
+existing gestures/menu actions rather than inventing another close control.
+Run `node --test scripts/pane-tab-layout.test.mjs` from `apps/desktop` against
+the running renderer to check native RTL/LTR geometry without CDP or an app build.
 
 Sticky user messages clip covered scrolling content, including the gap above
 them. Their wrappers stay unpainted; only the rounded user bubble owns a fill.
@@ -377,7 +444,100 @@ It does not resize the sidebar, settings, toolbars, media, or pane geometry.
 Conversation size and line-height tokens are derived inside the transcript/editor
 from their root base tokens; do not multiply the global tokens or nest CSS zoom.
 
+Arabic transcript/editor text (`:lang(ar)`) uses native system/Arabic faces
+before generic sans-serif, at weight 400. Do not append the Segoe-first UI
+stack: an installed Segoe UI otherwise takes the Arabic glyph fallback on macOS.
+The Arabic base is 14px, body leading 20px and transcript prose leading 22px;
+the user's Chat Text Size multiplier still applies. Preserve semantic bold,
+headings and isolated-LTR code; do not flatten descendant weights.
+
+### Arabic skin bubbles
+
+`src/themes/hermes-arabi.css` owns the opt-in treatment for `hermes-arabi`
+and `hermes-arabi-light` (including ThemeProvider's normalized name + mode).
+The dark Arabic skin honors Light appearance using the registered light sibling,
+or the existing synthesized light palette until that sibling is available.
+Explicit `hermes-arabi-light` stays a light single-palette skin in either mode.
+Dedicated `--dt-chat-{user,assistant}-{background,foreground}` tokens keep
+message colors separate from `--ui-chat-bubble-background`, which dialogs use.
+Shared geometry: `--dt-chat-bubble-{radius,padding-block,padding-inline,max-width}`.
+Sides are PHYSICAL, by Emad's explicit preference (it deliberately differs
+from Grok, which mirrors them logically): user/action anchors always sit on
+the right and assistant content on the left, in Arabic and English alike. In
+RTL that means user = inline-start, assistant = inline-end. Text inside each
+bubble still aligns to `start`. Keep existing user restore/stop clearance and
+the transcript's turn spacing.
+
+The skin engine already supports `customCSS`; override these variables in its
+`:root` block. Defaults have zero specificity, so skin overrides win. No skin
+schema/backend change or modification of installed user skin files is required.
+
+Source: Grok Bot 0.79.3 renderer `index-FlssbLEI.css` (minified line 1):
+`.sand-ocoep0` → 18px prose radius; `.sand-figyqd` / `.sand-1q1yrnu` → 7px
+block padding; `.sand-vhurb8` / `.sand-11ct0s3` → 12px inline padding;
+`.sand-12qmj0a` / `.sand-18rdzox` → user / agent fill;
+`.sand-vc5jky` → `margin-inline-start:auto`; `.sand-pvyfi4` → `align-self:flex-end`
+(Grok's logical sides; not used — see the physical-sides rule above).
+`index.eager-app-Bpx4jnxc.js` assigns those classes in `JX.message` / `JX.user`.
+Group starts (`.sand-19snzy6`) add `--cursor-spacing-3` = 12px; continuation
+exceptions are separate. This skin retains Hermes's existing turn grouping.
+The cap follows Grok's `.sand-1q8iv8g` exactly:
+`min(80%, 560px, 100% - 82px)`. Apply the percentage cap once on the user
+action anchor, not again on its nested bubble; assistant content owns its cap.
+
+### Arabic skin composer
+
+The same skin stylesheet exposes `--dt-chat-composer-*` tokens for background,
+foreground, resting/focused border, border width, radius, shadow, selection
+background/foreground and caret. The shared `--composer-fill` bridge preserves
+one opaque fill across scrolled/focused/docked states. Only composer-root editors
+receive composer ink/selection/caret; inline user-message editing keeps user ink.
+The existing skin `customCSS` channel can override each token in `:root`.
+HUD's floating composer consumes these same tokens (with its original defaults
+for other skins); RTL uses the normal shared composer layout. Placeholder picks
+refresh when the locale resolves, even if the session has not changed.
+
+Verified source selectors in Grok's `index-FlssbLEI.css` (minified line 1):
+
+| Concern | Selector / owner | Light | Dark |
+| --- | --- | --- | --- |
+| Background | `.sand-10e981r`, `--sand-bg-elevated` | `#ffffff` | `#1f1f1f` |
+| Rest border | `.sand-17tbahu`, `--sand-border-secondary-translucent` | `#1c1c1c1f` | `#f5f5f51a` |
+| Hover / focus | `.sand-iv08qi:hover` / `.sand-sb55g1:focus-within`, `--sand-border-primary-translucent` | `#1c1c1c3d` | `#f5f5f538` |
+| Selection | `.ui-ostxn8 .ProseMirror::selection`, `.ui-btkxa0 .ProseMirror ::selection`, `--cursor-bg-active` → `--sand-bg-active` | `#1c1c1c14` | `#f5f5f514` |
+| Caret | `.ui-zx44go`, `--cursor-text-primary` → `--sand-text-primary` | `#1c1c1c` | `#f5f5f5` |
+
+`index.eager-app-Bpx4jnxc.js`, `q$.frame` / `J$` (`sand-kit-message-input-frame`)
+connects the background/border/shadow classes to the real prompt frame. `xjt=.5`
+sets a 0.5px border via `.sand-1mw0n95`; `q$.radius` / `.sand-7yrpt8` uses
+18px expanded / 22px compact. Hermes already distinguishes the normal inline
+composer from the expanded/stacked editor in `useComposerMetrics`; that existing
+`stacked` result stamps `data-composer-expanded` on the root. The normal state
+uses `--dt-chat-composer-radius` = 22px; the stacked state uses
+`--dt-chat-composer-expanded-radius` = 18px, including width-forced stacking.
+No new size observer or keystroke subscription is added. The text field itself
+(`C1.field`, `.sand-jbqb8w`) is transparent.
+
+The frame shadow `.sand-jmgmaz` is literal in both appearances:
+`0 2px 8px -1px #0000000d, 0 1px 2px #00000008, 0 0 0 1px #e4e4e40a`.
+Focus changes the neutral border, not the shadow. Do not substitute the unrelated
+blue `--sand-border-focus-primary` ring or generic popover-shadow tokens here.
+Resolved theme colors were cross-checked against the audit's
+`resolved-theme-tokens.json`; the `Y5n` bridge maps cursor aliases to Sand tokens.
+The selection rules are shared editor rules (also bundled in
+`chunk-document-page-wxkGlv0G.js`), not a guessed blue browser selection.
+
 ## Chat, tools & boot surfaces
+
+- Horizontal split handles sit at the owning child's inline-start edge, beside
+  its previous logical sibling. RTL mirrors the handle and its paint, not the
+  pane indices; convert physical pointer deltas to inline direction exactly once.
+  Master-detail list seams follow the same rule. The zone editor retains its
+  physical canvas coordinates.
+
+- The thread timeline rail sits at inline-end in both LTR and RTL. Its visible
+  hit targets have a reserved content gutter, so neither ticks nor clicks cover
+  message text. Hiding the rail restores the normal content padding.
 
 - The transcript and composer are built on `@assistant-ui/react`. Extend the
   existing components under `src/components/assistant-ui` and
@@ -556,8 +716,22 @@ long transcript or a busy terminal.
 
 ## i18n
 
+- Numeric stat values (`tabular-nums`) are isolated LTR fragments; shared statusbar
+  labels/details use `bdi dir="auto"`. Keep row order label then value so flex
+  places them at inline-start/end. Usage percentages use `formatPercent` and the
+  active locale, with isolated interpolation in Arabic sentences.
+
+- The root `I18nProvider` supplies Radix direction from the active locale, including
+  portaled menus and selects. Submenu arrows and keyboard navigation mirror together.
 - Every user-facing string goes through `useI18n()` (`src/i18n/context.tsx`).
   No literals in JSX.
+- The shared `Zoomable` viewer reuses common/desktop catalog labels for its
+  trigger and toolbar; callers supply only content-specific labels.
+- Bundled layout names come from `zones.presetNames` at shared registration and
+  refresh on locale changes; user/plugin names remain untouched. Messaging and
+  the gateway popover share `platformStatusLabel` and the messaging state catalog.
+- Arabic catalogs retain Hermes, Terminal/Terminals, Tokens, Webhooks, MCP, API,
+  GPU, RAM, SSH, JSON, GPT-Live and Nous in English; المهارات and الذاكرة stay Arabic.
 - **Update all locales together** — every catalog registered in
   `src/i18n/catalog.ts`. A string change in `en.ts` that skips the others is a
   regression (drifted punctuation, stale labels). Keep trailing-punctuation and

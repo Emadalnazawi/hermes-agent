@@ -4386,6 +4386,7 @@ export const en: Translations = {
   },
 
   zones: {
+    presetNames: { 'sidebar-left': 'Sidebar left', 'sidebar-right': 'Sidebar right', default: 'Default', basic: 'Basic', focus: 'Focus', 'terminal-deck': 'Terminal deck', quad: 'Quad', demo: 'Demo' },
     showTabStrip: 'Show tabs',
     hideTabStrip: 'Hide tabs',
     showStripTab: title => `Show ${title}`,

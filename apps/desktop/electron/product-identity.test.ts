@@ -117,6 +117,29 @@ test('nonstable runtime pins userData before the app name can change', async ():
   }
 })
 
+test('nonstable identity honors explicit userData without creating a default directory', async (): Promise<void> => {
+  process.env.HERMES_BUILD_COMMIT = 'c'.repeat(40)
+  const identity: ProductIdentity = await identityForVariant('light')
+  const runtime: { applyDesktopIdentity: typeof applyDesktopIdentity } = await import('./product-identity')
+  const root: string = fs.mkdtempSync(path.join(os.tmpdir(), 'identity-explicit-userdata-'))
+  const override: string = path.join(root, 'isolated-data')
+  let actual: string | undefined
+  const app: Parameters<typeof applyDesktopIdentity>[0] = {
+    getPath: (): string => path.join(root, 'default-appdata'),
+    setPath: (_key: string, value: string): void => { actual = value },
+    setName: (): void => {}
+  }
+
+  try {
+    assert.equal(runtime.applyDesktopIdentity(app, identity, { HERMES_DESKTOP_USER_DATA_DIR: override }), identity.displayName)
+    assert.equal(actual, override)
+    assert.equal(fs.existsSync(override), true)
+    assert.equal(fs.existsSync(path.join(root, 'default-appdata')), false)
+  } finally {
+    fs.rmSync(root, { recursive: true, force: true })
+  }
+})
+
 test.each([
   [undefined, 'Hermes', 'hermes', 'latest', 'canary'],
   ['bundled', 'Hermes Agent', 'hermes', 'latest', 'canary'],

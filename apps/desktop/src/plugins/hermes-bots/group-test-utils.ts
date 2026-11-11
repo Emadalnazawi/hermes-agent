@@ -463,6 +463,9 @@ export async function pluginSdkMock(host: Record<string, unknown>) {
   const { ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuSeparator, ContextMenuTrigger } =
     await import('@/components/ui/context-menu')
 
+  // The group details panel closes through the shared surface control.
+  const { SurfaceCloseButton } = await import('@/components/ui/surface-close')
+
   return {
     Textarea,
     ContextMenu,
@@ -470,6 +473,7 @@ export async function pluginSdkMock(host: Record<string, unknown>) {
     ContextMenuItem,
     ContextMenuSeparator,
     ContextMenuTrigger,
+    SurfaceCloseButton,
     cn,
     // Real value: approval.respond forwards it as its client deadline (#60654).
     APPROVAL_RESPOND_TIMEOUT_MS: 300_000,

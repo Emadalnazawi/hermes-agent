@@ -113,7 +113,7 @@ export const arCommandCenter = {
       },
       usage: {
         title: 'لوحة الاستخدام',
-        detail: 'نشاط الرموز والتكلفة والمهارات'
+        detail: 'نشاط Tokens والتكلفة والمهارات'
       }
     },
     providerNavigate: 'فتح المزود',
@@ -150,13 +150,13 @@ export const arCommandCenter = {
     days: count => `${count} يوم`,
     statSessions: 'الجلسات',
     statApiCalls: 'نداءات API',
-    statTokens: 'الرموز',
+    statTokens: 'Tokens',
     statCost: 'التكلفة',
     actualCost: cost => `التكلفة الفعلية ${cost}`,
     loadingUsage: 'جار تحميل الاستخدام',
     noUsage: period => `لا يوجد استخدام خلال ${period} يوم`,
     retry: 'إعادة المحاولة',
-    dailyTokens: 'الرموز اليومية',
+    dailyTokens: 'Tokens اليومية',
     input: 'إدخال',
     output: 'إخراج',
     noDailyActivity: 'لا يوجد نشاط يومي',

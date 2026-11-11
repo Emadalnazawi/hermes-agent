@@ -220,7 +220,7 @@ function StatusbarVisibilityMenu({
 function StatusbarHideHint() {
   const hint = useKeybindHint('view.toggleStatusbar')
 
-  return hint ? <span className="ml-auto pl-2 text-(--ui-text-quaternary)">{hint}</span> : null
+  return hint ? <span className="ms-auto ps-2 text-(--ui-text-quaternary)">{hint}</span> : null
 }
 
 /** Memoized: `useStatusbarItems` rebuilds the item array whenever ANY of its
@@ -248,8 +248,8 @@ const StatusbarItemView = memo(function StatusbarItemView({
   const content = (
     <>
       {item.icon}
-      {item.label && <span className="truncate">{item.label}</span>}
-      {item.detail && <span className="truncate text-muted-foreground/80">{item.detail}</span>}
+      {item.label && <bdi className="truncate" dir="auto">{item.label}</bdi>}
+      {item.detail && <bdi className="truncate text-muted-foreground/80" dir="auto">{item.detail}</bdi>}
     </>
   )
 

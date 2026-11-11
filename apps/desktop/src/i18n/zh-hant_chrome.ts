@@ -489,6 +489,7 @@ export const zhHantChrome = {
   },
 
   zones: {
+    presetNames: { 'sidebar-left': '左側邊欄', 'sidebar-right': '右側邊欄', default: '預設', basic: '基礎', focus: '專注', 'terminal-deck': '終端工作區', quad: '四分區', demo: '示範' },
     showTabStrip: '顯示分頁',
     hideTabStrip: '隱藏分頁',
     showStripTab: title => `顯示 ${title}`,

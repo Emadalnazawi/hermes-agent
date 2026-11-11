@@ -4226,6 +4226,7 @@ export const zhOverrides = {
   },
 
   zones: {
+    presetNames: { 'sidebar-left': '左侧边栏', 'sidebar-right': '右侧边栏', default: '默认', basic: '基础', focus: '专注', 'terminal-deck': '终端工作区', quad: '四分区', demo: '演示' },
     showTabStrip: '显示标签',
     hideTabStrip: '隐藏标签',
     showStripTab: title => `显示 ${title}`,

@@ -1,5 +1,6 @@
 import { type RefObject, useCallback, useEffect, useState } from 'react'
 
+import { writingDirection } from '@/lib/writing-direction'
 import type { ClarifyQuestion } from '@/store/clarify'
 
 import { arrowMove, isForeignKeystroke, shortcutIndex } from './use-clarify-keys-handlers'
@@ -190,7 +191,8 @@ export function useClarifyKeys({
         return
       }
 
-      const arrow = arrowMove(event.key, columns)
+      const form = formRef.current
+      const arrow = arrowMove(event.key, columns, form ? writingDirection(form) === 'rtl' : false)
 
       if (arrow) {
         if (choices.length > 0) {

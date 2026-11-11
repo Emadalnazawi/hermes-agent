@@ -538,7 +538,7 @@ export const CatalogBrowser = memo(function CatalogBrowser({
                   <DetailColumn footer={c.snapshotHint}>
                     <div className="sm:hidden">
                       <Button onClick={() => setDetailOpen(false)} size="sm" variant="text">
-                        <Codicon name="arrow-left" />
+                        <Codicon className="rtl:-scale-x-100" name="arrow-left" />
                         {c.back}
                       </Button>
                     </div>

@@ -4821,6 +4821,7 @@ export const frOverrides = {
     }
   },
   zones: {
+    presetNames: { 'sidebar-left': 'Barre latérale à gauche', 'sidebar-right': 'Barre latérale à droite', default: 'Par défaut', basic: 'Basique', focus: 'Concentration', 'terminal-deck': 'Espace terminal', quad: 'Quatre zones', demo: 'Démo' },
     showTabStrip: 'Afficher les onglets',
     hideTabStrip: 'Masquer les onglets',
     showStripTab: title => `Afficher ${title}`,

@@ -9,6 +9,7 @@ import {
 } from '@hermes/shared'
 import { useStore } from '@nanostores/react'
 import { useQuery } from '@tanstack/react-query'
+import { Direction } from 'radix-ui'
 import {
   createContext,
   Fragment,
@@ -101,7 +102,7 @@ function ModelPrice({ pricing }: { pricing: ModelPricing }) {
   const cache = pricing.cache || null
 
   if (pricing.free) {
-    return <span className="shrink-0 pl-2 text-[0.625rem] text-(--ui-green)">{copy.free}</span>
+    return <span className="shrink-0 ps-2 text-[0.625rem] text-(--ui-green)">{copy.free}</span>
   }
 
   if (!input && !output) {
@@ -113,7 +114,7 @@ function ModelPrice({ pricing }: { pricing: ModelPricing }) {
 
   return (
     <span
-      className="flex shrink-0 items-center gap-1.5 pl-2 text-[0.625rem] tabular-nums text-(--ui-text-tertiary)"
+      className="flex shrink-0 items-center gap-1.5 ps-2 text-[0.625rem] tabular-nums text-(--ui-text-tertiary)"
       title={copy.priceTitle(input ?? '—', output ?? '—', cache ?? '')}
     >
       <span>
@@ -256,6 +257,7 @@ export function ModelCatalogMenu({
   sessionId = null
 }: ModelCatalogMenuProps): ReactElement {
   const { t } = useI18n()
+  const submenuOpenKey = Direction.useDirection() === 'rtl' ? 'ArrowLeft' : 'ArrowRight'
   const copy = t.shell.modelMenu
   const copyPicker = t.modelPicker
   const closeMenu = useContext(ModelMenuCloseContext)
@@ -599,20 +601,15 @@ export function ModelCatalogMenu({
 
   // ── Keyboard path into a row's edit submenu (#86966) ─────────────────────
   // Rows are HIGHLIGHTED, not DOM-focused (focus stays in the search input so
-  // typing keeps working), which is why Radix's own ArrowRight-on-the-trigger
-  // never fires. ArrowRight therefore hands focus to the highlighted trigger
+  // typing keeps working), which is why Radix's own inline-end arrow handler
+  // never fires. That arrow therefore hands focus to the highlighted trigger
   // and replays the key there: from that point Radix owns everything — opening
   // the sub, focusing its first item, and returning focus to the trigger when
-  // ArrowLeft closes it. `handleSubOpenChange` below finishes that round trip
+  // the opposite arrow closes it. `handleSubOpenChange` finishes that round trip
   // by putting focus back in the search field. (Escape is not part of it:
   // inside a sub, Radix dismisses the WHOLE menu rather than just the sub.)
   //
-  // ArrowRight is hard-coded rather than direction-aware because Radix's own
-  // binding is: the app installs no `DirectionProvider` and passes no `dir`,
-  // so `useDirection` resolves to `ltr` and Radix opens subs on ArrowRight in
-  // every locale, RTL included. Matching that keeps the two in step; whoever
-  // wires up a `DirectionProvider` has to teach this handler the same
-  // direction Radix reads, or the sub goes unreachable again in Arabic.
+  // Read the same direction context as Radix so Arabic opens with ArrowLeft.
   // WHICH row we opened from the keyboard, not merely THAT we opened one: a
   // bare flag is still set when a keyboard-opened sub closes because the mouse
   // moved on to another row, and refocusing search there pulls focus out from
@@ -628,7 +625,7 @@ export function ModelCatalogMenu({
 
     keyboardSubRef.current = { key: kbActiveKey, trigger }
     trigger.focus()
-    trigger.dispatchEvent(new KeyboardEvent('keydown', { bubbles: true, key: 'ArrowRight' }))
+    trigger.dispatchEvent(new KeyboardEvent('keydown', { bubbles: true, key: submenuOpenKey }))
 
     // Highlight also lands on rows that are plain items rather than submenu
     // triggers (the MoA presets), which swallow the key; an open can also be
@@ -665,7 +662,7 @@ export function ModelCatalogMenu({
 
     // Deferred one frame because Radix restores focus to the trigger straight
     // AFTER this callback — and that restore is the signal we need. Radix does
-    // it only for a keyboard close (ArrowLeft); a sub closed because the
+    // it only for a keyboard close; a sub closed because the
     // pointer moved to another row leaves focus where it fell, and grabbing it
     // then would fight the mouse. So finish the round trip only if the trigger
     // really is holding focus.
@@ -718,9 +715,9 @@ export function ModelCatalogMenu({
             event.preventDefault()
             event.stopPropagation()
             commitKbRow()
-          } else if (event.key === 'ArrowRight' && caretAtEnd(event.currentTarget)) {
+          } else if (event.key === submenuOpenKey && caretAtEnd(event.currentTarget)) {
             // Claimed only with the caret parked at the end of the query, where
-            // ArrowRight has nothing left to do as a text cursor.
+            // the inline-end arrow has nothing left to do as a text cursor.
             if (openActiveSubmenu()) {
               event.preventDefault()
               event.stopPropagation()
@@ -821,7 +818,7 @@ export function ModelCatalogMenu({
                     open={!collapsed}
                     size="0.625rem"
                   />
-                  <ProviderStatusChip className="ml-auto mr-0.5" provider={group.provider} />
+                  <ProviderStatusChip className="ms-auto me-0.5" provider={group.provider} />
                 </DropdownMenuItem>
                 {/* Window plans past an allowance: one line saying what happens next (pay as you go
                     or wait for the reset) instead of a note on every row. */}
@@ -1222,7 +1219,7 @@ function ModelFamilyRow({
 }
 
 /** True when the text cursor sits at the very end with nothing selected — the
- *  only state where ArrowRight is free for the menu to claim. */
+ *  only state where the inline-end arrow is free for the menu to claim. */
 function caretAtEnd(input: HTMLInputElement): boolean {
   const { selectionEnd, selectionStart, value } = input
 
@@ -1240,7 +1237,7 @@ const catalogGroupLabel =
 // A provider inside a mixed Favorites section: the group heading's ink, set
 // in normal case and indented to the model names it labels, so it reads as
 // a sub-group rather than a sibling section.
-const favoriteProviderLabel = 'pt-1.5 pb-0 pr-2 pl-7.75 text-[0.625rem] text-(--ui-text-tertiary)'
+const favoriteProviderLabel = 'pt-1.5 pb-0 pe-2 ps-7.75 text-[0.625rem] text-(--ui-text-tertiary)'
 
 /** The picker's chips: a filled tag for what the model IS (its variant), an
  *  outlined one for how this row is SET (fast, effort), so the two read as

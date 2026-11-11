@@ -1352,6 +1352,7 @@ export function ChatBar({
               // Ctrl+primary-button drag. pt-4 is the carved-out grab band.
               hudNativeDrag && 'hud-native-drag pt-4 [-webkit-app-region:drag]'
             )}
+            data-composer-expanded={stacked ? '' : undefined}
             data-drag-active={dragActive ? '' : undefined}
             data-hud-grabbing={hudGrabbing ? '' : undefined}
             data-popped-out={poppedOut ? '' : undefined}

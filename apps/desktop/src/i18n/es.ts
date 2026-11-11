@@ -4796,6 +4796,7 @@ export const esOverrides = {
     }
   },
   zones: {
+    presetNames: { 'sidebar-left': 'Barra lateral izquierda', 'sidebar-right': 'Barra lateral derecha', default: 'Predeterminado', basic: 'Básico', focus: 'Enfoque', 'terminal-deck': 'Espacio de terminal', quad: 'Cuatro zonas', demo: 'Demostración' },
     showTabStrip: 'Mostrar pestañas',
     hideTabStrip: 'Ocultar pestañas',
     showStripTab: title => `Mostrar ${title}`,

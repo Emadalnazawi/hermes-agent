@@ -47,6 +47,10 @@ function currentGaps(): Record<string, string[]> {
   )
 }
 
+it('Arabic has no English fallback keys outside the separately tested intro rotation', () => {
+  expect(Object.entries(currentGaps()).filter(([, locales]) => locales.includes('ar')).map(([key]) => key)).toEqual([])
+})
+
 it('adds no untranslated key to any locale overlay beyond the known gaps', () => {
   const gaps = currentGaps()
 
