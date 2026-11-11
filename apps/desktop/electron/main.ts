@@ -1345,10 +1345,9 @@ const PROFILE_NAME_RE = DESKTOP_PROFILE_NAME_RE
 // tracks main. User can also override at runtime via
 // hermesDesktop.updates.setBranch().
 const DEFAULT_UPDATE_BRANCH = 'main'
-// desktop.log lives under HERMES_HOME/logs/ so it sits next to agent.log,
-// errors.log, gateway.log produced by hermes_logging.setup_logging — one log
-// directory per user, regardless of which UI surface produced the line.
-const DESKTOP_LOG_PATH = path.join(HERMES_HOME, 'logs', 'desktop.log')
+// Ordinary installs share backend logs; an explicit userData override keeps
+// this client's diagnostics with its isolated UI state instead.
+const DESKTOP_LOG_PATH = path.join(uiPreferencesRoot(HERMES_HOME, USER_DATA_OVERRIDE), 'logs', 'desktop.log')
 const DESKTOP_LOG_FLUSH_MS = 120
 const DESKTOP_LOG_BUFFER_MAX_CHARS = 64 * 1024
 // Bound desktop.log on disk. It is an append-only forensic log, so a boot loop
@@ -1968,7 +1967,7 @@ let connectionConfigCache = null
 let connectionConfigCacheMtime = null
 
 const gatewayConnectionsStore = createDesktopGatewayConnectionsStore({
-  root: uiPreferencesRoot(HERMES_HOME),
+  root: uiPreferencesRoot(HERMES_HOME, USER_DATA_OVERRIDE),
   userData: app.getPath('userData'),
   readV1Config: () => readDesktopConnectionConfig(),
   decrypt: secret => decryptDesktopSecret(secret),
@@ -16823,7 +16822,7 @@ ipcMain.on('hermes:logs:renderer-error', (_event, report) => {
 // Pre-paint payloads the preload reads synchronously: the local skin, and this
 // machine's shared UI preferences (#145213) — see local-skin.ts, ui-preferences.ts.
 registerLocalSkinIpc(ipcMain, HERMES_HOME, id => windowConnectionRoutes.get(id)?.profile, primaryProfileKey)
-registerMachineUiPreferences(HERMES_HOME)
+registerMachineUiPreferences(uiPreferencesRoot(HERMES_HOME, USER_DATA_OVERRIDE))
 // Another writer (the Webapp) changed the shared list: same teardown as a local save/remove.
 gatewayConnectionsStore.watch({
   onRegistry: (changes, { after, before }) => {

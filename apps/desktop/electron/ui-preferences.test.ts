@@ -39,6 +39,24 @@ const PY_PATH = 'from hermes_cli.ui_preferences import store_path; print(store_p
 const electronStorePath = (home: string, hermesHome: string) =>
   uiPreferencesPath(uiPreferencesRoot(resolveDesktopHermesHome({ env: { HERMES_HOME: hermesHome }, home })))
 
+test('an explicitly isolated desktop stores its preferences away from the real runtime home', async () => {
+  const home = scratchHome()
+  const runtime = path.join(home, 'runtime')
+  const userData = path.join(home, 'isolated-desktop')
+  fs.mkdirSync(runtime)
+  const ordinaryFile = uiPreferencesPath(uiPreferencesRoot(runtime))
+  await writeUiPreferences(ordinaryFile, { values: { 'hermes-desktop-mode-v1': 'light' } })
+  const original = fs.readFileSync(ordinaryFile, 'utf8')
+
+  const isolatedRoot = uiPreferencesRoot(runtime, userData)
+  assert.equal(isolatedRoot, path.join(userData, 'hermes-home'))
+  await writeUiPreferences(uiPreferencesPath(isolatedRoot), { values: { 'hermes-desktop-mode-v1': 'dark' } })
+
+  assert.equal(readUiPreferences(uiPreferencesPath(isolatedRoot)).values['hermes-desktop-mode-v1'], 'dark')
+  assert.equal(fs.readFileSync(ordinaryFile, 'utf8'), original)
+  assert.equal(uiPreferencesRoot(runtime), fs.realpathSync(runtime))
+})
+
 test('native Desktop and the Webapp server resolve the same store from a profile home', () => {
   const home = scratchHome()
   const root = path.join(home, 'custom-root')

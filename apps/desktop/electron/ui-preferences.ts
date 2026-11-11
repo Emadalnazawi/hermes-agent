@@ -3,7 +3,8 @@
 // capability) and every browser that opens this machine's Webapp (the Python
 // twin `hermes_cli/ui_preferences.py`, over `/api/ui-preferences`). Not per
 // profile, not per gateway connection: a Desktop connected to a remote gateway
-// still reads and writes ITS OWN machine's file.
+// still reads and writes ITS OWN machine's file. An explicit desktop userData
+// override opts out of that sharing, without changing its backend/profile home.
 //
 // On-disk contract, kept in lockstep with the Python writer:
 //   { "version": 1, "generation": <str>, "revision": <int>, "values": { <key>: <string> } }
@@ -44,14 +45,16 @@ export interface UiPreferencesWrite {
 
 export const uiPreferencesPath = (hermesHome: string) => path.join(hermesHome, UI_PREFERENCES_FILE)
 
-/** The store's directory for main's root home, through symlinks, as the Python
- *  writer's `store_path()` resolves it: a symlinked root or profile directory
- *  must not split the machine into two stores. */
-export function uiPreferencesRoot(hermesHome: string): string {
+/** Resolve the shared machine store, unless a caller explicitly isolates its
+ *  desktop userData. An isolated client may still use a real local backend:
+ *  its UI preferences, gateway list and tokens must not follow that backend home. */
+export function uiPreferencesRoot(hermesHome: string, isolatedUserData?: string): string {
+  const root = isolatedUserData ? path.join(isolatedUserData, 'hermes-home') : hermesHome
+
   try {
-    return fs.realpathSync.native(hermesHome)
+    return fs.realpathSync.native(root)
   } catch {
-    return path.resolve(hermesHome)
+    return path.resolve(root)
   }
 }
 
